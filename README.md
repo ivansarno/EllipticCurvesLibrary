@@ -1,7 +1,7 @@
 # EllipticCurvesLibrary
 Elliptic Curves Cryptography Library
 
-Work in Progress Version
+Beta Version
 
 la libreria implementa in Python le operazioni di base su curve ellittiche e 2 algoritmi di cifratura, contiene:
 
