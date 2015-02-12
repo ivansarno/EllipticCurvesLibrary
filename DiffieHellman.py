@@ -4,11 +4,12 @@ import os
 
 #define of constant and replaceable function
 
-DH_Curve_size = 192 #size in bit integer in the operation
+DH_Curve_size = 192 #size in bit integer in the operation (192,224,256,384 or 521)
 
 def randint():  #random number generator
     temp = os.urandom(DH_Curve_size // 8)
     return int.from_bytes(temp,'little')
+
 
 class DH_Keycreator:
     def __init__(self, point):

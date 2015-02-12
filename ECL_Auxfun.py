@@ -1,4 +1,5 @@
 __author__ = 'ivansarno'
+#implementation of Extended Euclide algorithm and inverse in modulo calculation
 
 def ExtendedEuclide(a,b):
     if b==0:

@@ -37,6 +37,7 @@ def Sum(A,B):
 
 
 def Negation(P):
+    """aritmetic negation of a point"""
     ris = Point(P.curve,P.X,-P.Y % P.curve.Prime)
     return ris
 

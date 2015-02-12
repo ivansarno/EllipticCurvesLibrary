@@ -64,11 +64,11 @@ def AreOpposites(A,B):
 
 class Point_wO (Point):
     """point with order"""
-    def __init__(self,C,x,y,Order):
+    def __init__(self,C,x,y,order):
         self.curve=C
         self.X=x
         self.Y=y
         self.infinite=False
-        self.order = Order
+        self.order = order
 
 
