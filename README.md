@@ -9,8 +9,6 @@ la libreria implementa in Python le operazioni di base su curve ellittiche e 2 a
 
 -operatori di base 
 
--algoritmo di Koblitz
-
 -Cifrario di El Gamal
 
 -Protocollo Diffie-Hellman
