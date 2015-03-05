@@ -2,45 +2,37 @@ __author__ = 'ivansarno'
 from ECL_operator import *
 import os
 
-#define of constant and replaceable function
+#
+# Diffie-Hellman public key algorithm on Elliptic Curves
 
-DH_Curve_size = 192 #size in bit integer in the operation (192,224,256,384 or 521)
+#
+# define of constant and replaceable function
 
-def randint():  #random number generator
+DH_Curve_size = 192  # size in bit of integer in the operation (192,224,256,384 or 521)
+#######
+
+def randint():
+    """random number generator"""
     temp = os.urandom(DH_Curve_size // 8)
-    return int.from_bytes(temp,'little')
+    return int.from_bytes(temp, 'little')
 
 
-class DH_Keycreator:
+class DHkeycreator:
+    """this object creates and stores a key"""
     def __init__(self, point):
-        self.point=point
+        """take a PointWOrder as base"""
+        self.point = copy(point)
 
     def step1(self):
+        """start protocol and return a Point to send to partner"""
         self.secret = randint() % self.point.order
-        return Product(self.point,self.secret)
+        return product(self.point, self.secret)
 
-    def step2(self,partnerpoint):
-        self.key = Product(partnerpoint,self.secret)
+    def step2(self, partnerpoint):
+        """take result of partener step1 and return the key as Point abject"""
+        self.key = product(partnerpoint, self.secret)
         return self.key
 
     def returnkey(self):
+        """return the key as Point abject"""
         return self.key
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

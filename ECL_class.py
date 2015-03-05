@@ -1,74 +1,72 @@
 __author__ = 'ivansarno'
-from ECL_Auxfun import Inverse
+from ECL_Auxfun import inverse
+
 
 class Curve:
-    """Prime Elliptic Curve, parameters A and B, field Prime"""
-    def __init__(self,a,b,p):
-        self.A=a
-        self.B=b
-        self.Prime=p
+    """Prime Elliptic Curve, parameters a and b, field prime"""
+    def __init__(self, a_init, b_init, prime_init):
+        self.a = a_init
+        self.b = b_init
+        self.prime = prime_init
 
 
 class Point:
-    """Point of Curve, parameters X,Y the curve of point and if is the infinite point"""
-    def __init__(self,C,x,y):
-        self.curve=C
-        self.X=x
-        self.Y=y
-        self.infinite=False
-    def Doubles(self):
-        if not self.infinite:
-            if self.Y==0:
-                self.infinite=True
-            else:
-                lam=((3 * self.X**2 + self.curve.A) * Inverse(2 * self.Y, self.curve.Prime)) % self.curve.Prime
-                x=((lam**2)-self.X-self.X) % self.curve.Prime
-                y=(lam*(self.X-x)-self.Y) % self.curve.Prime
-                self.Y=y
-                self.X=x
+    """Point of Curve, parameters x,y, the curve of point and if is the infinite point"""
+    def __init__(self, curve, x_init, y_init):
+        self.curve = curve
+        self.x = x_init
+        self.y = y_init
+        self.infinite = False
 
-    def Add(self,P):
-        if not P.infinite:
+    def doubles(self):
+        """duplicates the point"""
+        if not self.infinite:
+            if self.y == 0:
+                self.infinite = True
+            else:
+                lam = ((3 * self.x ** 2 + self.curve.a) * inverse(2 * self.y, self.curve.prime)) % self.curve.prime
+                newx = ((lam ** 2)-self.x-self.x) % self.curve.prime
+                newy = (lam * (self.x-newx)-self.y) % self.curve.prime
+                self.y = newy
+                self.x = newx
+
+    def add(self, p):
+        """sum the the point p at the point"""
+        if not p.infinite:
             if self.infinite:
                 self.infinite = False
-                self.X = P.X
-                self.Y = P.Y
-            elif AreOpposites(self,P):
+                self.x = p.x
+                self.y = p.y
+            elif are_opposites(self, p):
                 self.infinite = True
-            elif SamePoint(self,P):
-                self.Doubles()
+            elif same_point(self, p):
+                self.doubles()
             else:
-                lam=((P.Y-self.Y) * Inverse(P.X-self.X, self.curve.Prime)) % self.curve.Prime
-                x=((lam**2)-self.X-P.X) % self.curve.Prime
-                y=(lam*(self.X-x)-self.Y) % self.curve.Prime
-                self.Y=y
-                self.X=x
+                lam = ((p.y-self.y) * inverse(p.x-self.x, self.curve.prime)) % self.curve.prime
+                newx = ((lam**2)-self.x-p.x) % self.curve.prime
+                newy = (lam*(self.x-newx)-self.y) % self.curve.prime
+                self.y = newy
+                self.x = newx
 
-    def Opposite(self):
-        self.Y = -self.Y % self.curve.Prime
-
-
-
-
-def SameCurve(C1,C2):
-    return (C1.A==C2.A) and (C1.B==C2.B) and (C1.Prime == C2.Prime)
+    def opposite(self):
+        """do the arithmetic negation of the point"""
+        self.y = -self.y % self.curve.prime
 
 
-def SamePoint(P1,P2):
-    return (P1.X==P2.X) and (P1.Y==P2.Y) and SameCurve(P1.curve, P2.curve) and (P1.infinite==P2.infinite)
+def same_curve(c1, c2):
+    return (c1.a == c2.a) and (c1.b == c2.b) and (c1.prime == c2.prime)
 
 
+def same_point(p1, p2):
+    return (p1.x == p2.x) and (p1.y == p2.y) and same_curve(p1.curve, p2.curve) and (p1.infinite == p2.infinite)
 
-def AreOpposites(A,B):
-    return (not A.infinite) and (not B.infinite) and SameCurve(A.curve,B.curve) and (A.X==B.Y) and (A.Y == -B.Y % B.curve.Prime)
 
-class Point_wO (Point):
+def are_opposites(p1, p2):
+    return (not p1.infinite) and (not p2.infinite) and same_curve(p1.curve, p2.curve) and (p1.x == p2.x) and (p1.y == -p2.y % p2.curve.prime)
+
+
+class PointWOrder (Point):
     """point with order"""
-    def __init__(self,C,x,y,order):
-        self.curve=C
-        self.X=x
-        self.Y=y
-        self.infinite=False
+    def __init__(self, curve, x, y, order):
+        super().__init__(curve, x, y)
         self.order = order
-
-
