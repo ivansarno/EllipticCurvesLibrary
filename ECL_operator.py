@@ -1,4 +1,5 @@
 __author__ = 'ivansarno'
+__version__ = 'V.1.5'
 from ECL_class import *
 
 

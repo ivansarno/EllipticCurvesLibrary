@@ -1,5 +1,7 @@
 __author__ = 'ivansarno'
+__version__ = 'V.1.5'
 from ECL_operator import *
+from ECL_Auxfun import is_square
 import os
 #
 # EL Gamal public key cipher on Elliptic Curves
@@ -60,3 +62,26 @@ def eg_decrypt(message, key):
     v = product(message.v, key.private)
     v.opposite()
     return addition(message.w, v)
+
+
+def koblitz_encode(msg, h, curve):
+    """converts a number in a Point"""
+    if msg * (h + 1) < curve.prime:
+        msg *= h
+        i = 0
+        x = msg
+        y = (x**3 + curve.a * x + curve.b) % curve.prime
+        while not is_square(y, curve.prime):
+            i += 1
+            x = msg + i
+            y = (x**3 + curve.a * x + curve.b) % curve.prime
+        return Point(curve, x, y)
+    else:
+        nil = Point(curve, 0, 0)
+        nil.infinite = True
+        return nil
+
+
+def koblitz_decode(point, h):
+    """converts a Point in a int deleting the padding"""
+    return point.x // h
