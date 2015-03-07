@@ -2,17 +2,21 @@
 Elliptic Curves Cryptography Library
 
 
-la libreria implementa in Python le operazioni di base su curve ellittiche e 2 algoritmi di cifratura, contiene:
+Python implementation of Elliptic Curves Criptography
 
--le classi Curve, Point e Point with order
+includes:
 
--operatori di base 
+-the classes Curve, Point and Point with order
 
--Cifrario di El Gamal
+-base operations
 
--Protocollo Diffie-Hellman
+-El Gamal's cipher
 
--le curve standard consigliate dal NIST
+-Koblitz algorithm
+
+-Diffie-Hellman's Protocol 
+
+-NIST standard prime curves
 
 
 
