@@ -1,5 +1,9 @@
 __author__ = 'ivansarno'
-__version__ = 'V.1.5'
+#
+# deprecate
+# These functions have been replaced by overloaded operators
+# may not be supported in the next release
+
 from ECL_class import *
 
 
@@ -69,7 +73,14 @@ def product(point, num):
                 num = num - i
             j -= 1
             i //= 2
-
         return temp
     else:
         return copy(point)
+
+
+def same_curve(c1, c2):
+    return (c1.a == c2.a) and (c1.b == c2.b) and (c1.prime == c2.prime)
+
+
+def same_point(p1, p2):
+    return (p1.x == p2.x) and (p1.y == p2.y) and same_curve(p1.curve, p2.curve) and (p1.infinite == p2.infinite)

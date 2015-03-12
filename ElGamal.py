@@ -1,26 +1,35 @@
 __author__ = 'ivansarno'
-__version__ = 'V.1.5'
-from ECL_operator import *
+__version__ = 'V.2.0'
+
+from ECL_class import *
 from ECL_Auxfun import is_square
 import os
 #
-# EL Gamal public key cipher on Elliptic Curves
+# EL Gamal public key cipher on Elliptic Curves and Koblitz algorithm
 
 #
 #  define of constant and replaceable function
 
-# size in bit integer in the operation
-DH_Curve_size = 192
+# size in bit integer in the operation (192,224,256,384 or 521 for standard curves)
+EG_Curve_size = 192
 
 
-# random number generator for big integer
 def randint():
-    temp = os.urandom(DH_Curve_size // 8)
+    """ Random number generator for big integer.
+
+    :return: random int of EG_curve_size bit
+    :rtype: int
+    """
+    temp = os.urandom(EG_Curve_size // 8)
     return int.from_bytes(temp, 'little')
 
 
-# random number generator for standard int
 def randfact():
+    """Random number generator for standard int.
+
+    :return: random 64 bit int
+    :rtype: int
+    """
     temp = os.urandom(8)
     return int.from_bytes(temp, 'little')
 
@@ -28,60 +37,122 @@ def randfact():
 
 
 class EGkey:
-    """object that contain cipher's key"""
+    """Object that contain cipher's key.
+
+    :var: private private key
+    :var: public: public key
+    :type private: int
+    :type public: int
+    """
     def __init__(self, priv, pub):
+        """
+
+        :param priv: int private key
+        :param pub: Point puplic key
+        """
         self.public = pub
         self.private = priv
 
 
 class EGmessage:
-    """cipher's message format"""
+    """Cipher's message format.
+
+    :type v: Point
+    :type w: Point
+    """
+
     def __init__(self, vpoint, wpoint):
+        """
+
+        :param vpoint: Point to initialize v member
+        :param wpoint: Point to initialize w member
+        :type vpoint: Point
+        :type wpoint: Point
+        """
         self.v = vpoint
         self.w = wpoint
 
 
 def eg_keygen(bpoint):
-    """ take a standard Point as base and return the key as EGkey object"""
+    """Cipher's key generator.
+
+    :param bpoint: Point used as base, can be used a standard point from ECL_standardcurves
+    :type bpoint: PointWOrder
+    :rtype: EGkey
+    :return: the key
+    """
     secret = randint() % bpoint.order
-    kpoint = product(bpoint, secret)
+    kpoint = bpoint * secret
     return EGkey(secret, kpoint)
 
 
 def eg_encrypt(message, pubkey, stpoint):
-    """El Gamal encrypt fun: stpoint is a standard point of EC, message is a Point,
-     pubkey an EGkey object with public key of receiver, return an EGmessage object"""
+    """El Gamal encryption fun.
+
+    :param message: Point that expresses the message
+    :param pubkey: Point used as puplic key
+    :param stpoint: Point used as base, can be used a standard point from ECL_standardcurves
+    :type message: Point
+    :type pubkey: Point
+    :type stpoint: Point
+    :return: encrypted message
+    :rtype: EGmessage
+    """
     fact = randfact()
-    vpoint = product(stpoint, fact)
-    wpoint = addition(message, product(pubkey, fact))
+    vpoint = stpoint * fact
+    wpoint = message + (pubkey * fact)
     return EGmessage(vpoint, wpoint)
 
 
 def eg_decrypt(message, key):
-    """El Gamal decrypt fun: take an EGmessage object as massage and an EGkey object as key, return a Point"""
-    v = product(message.v, key.private)
-    v.opposite()
-    return addition(message.w, v)
+    """El Gamal decryption fun
+
+    :type message: EGmessage
+    :type key: EGkey
+    :return: Point thet expresses the message decrypted
+    :rtype: Point
+    """
+    v = message.v * key.private
+    v.negation()
+    return message.w + v
 
 
-def koblitz_encode(msg, h, curve):
-    """converts a number in a Point"""
-    if msg * (h + 1) < curve.prime:
-        msg *= h
+def koblitz_encode(msg, padding, curve):
+    """Conversion int to Point using Koblitz algorithm.
+
+    :param msg: message
+    :type msg: int
+    :param padding: express the padding and number of maximum attempts
+    :type padding: int
+    :param curve: Curve of point returned
+    :type curve: Curve
+    :return: Point of curve or Point with infinite == True if algorithm fail
+    :rtype: Point
+    """
+    if msg * (padding + 1) < curve.prime:
+        msg *= padding
         i = 0
         x = msg
         y = (x**3 + curve.a * x + curve.b) % curve.prime
-        while not is_square(y, curve.prime):
+        while (not is_square(y, curve.prime)) and i < padding:
             i += 1
             x = msg + i
             y = (x**3 + curve.a * x + curve.b) % curve.prime
-        return Point(curve, x, y)
-    else:
-        nil = Point(curve, 0, 0)
-        nil.infinite = True
-        return nil
+        if i < padding:
+            return Point(curve, x, y)
+    nil = Point(curve, 0, 0)
+    nil.infinite = True
+    return nil
 
 
-def koblitz_decode(point, h):
-    """converts a Point in a int deleting the padding"""
-    return point.x // h
+def koblitz_decode(point, padding):
+    """Converts Point to int deleting the padding.
+
+    :param point: Point that contain a message
+    :type point: Point
+    :param padding: padding used to create the Point
+    :type padding: int
+    :return: the message, abscissa of point without the padding
+    :rtype: int
+    """
+    return point.x // padding

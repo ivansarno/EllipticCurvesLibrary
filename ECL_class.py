@@ -1,26 +1,79 @@
 __author__ = 'ivansarno'
-__version__ = 'V.1.5'
+__version__ = 'V.2.0'
+
 from ECL_Auxfun import inverse
 
 
 class Curve:
-    """Prime Elliptic Curve, parameters a and b, field prime"""
+    """Prime Elliptic Curve.
+
+    :type a: int
+    :type b: int
+    :parameter: prime:  prime number that define the field of the curve
+    :type prime: int
+    """
     def __init__(self, a_init, b_init, prime_init):
+        """
+
+        :type a_init: int
+        :type b_init: int
+        :param prime_init: prime number
+        :type prime_init: int
+        """
         self.a = a_init
         self.b = b_init
         self.prime = prime_init
 
+    def __eq__(self, other):
+        """
+
+        :type other: Curve
+        :return: self == other
+        :rtype: bool
+        """
+        return (self.a == other.a) and (self.b == other.b) and (self.prime == other.prime)
+
+    def __str__(self):
+        return 'a: ' + self.a.__repr__() + '\nb: ' + self.b.__repr__() + '\nprime: ' + self.prime.__repr__()
+
+    def __repr__(self):
+        return 'a:' + self.a.__repr__() + ' b:' + self.b.__repr__() + ' prime:' + self.prime.__repr__()
+
 
 class Point:
-    """Point of Curve, parameters x,y, the curve of point and if is the infinite point"""
+    """Point of Curve.
+
+    :parameter curve: Curve object, the Elliptic Curve that contain the point
+    :parameter x: int abscissa
+    :parameter y: int ordinate
+    """
     def __init__(self, curve, x_init, y_init):
+        """
+
+        :param curve: Curve object
+        :param x_init: abscissa
+        :param y_init: ordinate
+        :type curve: Curve
+        :type x_init: int
+        :type y_init: int
+        """
         self.curve = curve
         self.x = x_init
         self.y = y_init
         self.infinite = False
 
+    def __eq__(self, other):
+        """
+
+        :type other: Point
+        :return: self == other
+        :rtype: bool
+        """
+        return (self.x == other.x) and (self.y == other.y) and (self.curve == other.curve) and \
+               (self.infinite == other.infinite)
+
     def doubles(self):
-        """duplicates the point"""
+        """ Duplicates self without creates a new Point."""
         if not self.infinite:
             if self.y == 0:
                 self.infinite = True
@@ -32,7 +85,10 @@ class Point:
                 self.x = newx
 
     def add(self, p):
-        """sum the the point p at the point"""
+        """ Add a Point to self without creates a new Point.
+
+        :type p: Point
+        """
         if not p.infinite:
             if self.infinite:
                 self.infinite = False
@@ -40,7 +96,7 @@ class Point:
                 self.y = p.y
             elif are_opposites(self, p):
                 self.infinite = True
-            elif same_point(self, p):
+            elif self == p:
                 self.doubles()
             else:
                 lam = ((p.y-self.y) * inverse(p.x-self.x, self.curve.prime)) % self.curve.prime
@@ -49,25 +105,170 @@ class Point:
                 self.y = newy
                 self.x = newx
 
-    def opposite(self):
-        """do the arithmetic negation of the point"""
+    def negation(self):
+        """Changes the sign of the Point."""
         self.y = -self.y % self.curve.prime
 
+    def copy(self):
+        """Return a copy of self.
 
-def same_curve(c1, c2):
-    return (c1.a == c2.a) and (c1.b == c2.b) and (c1.prime == c2.prime)
+        :return: Point copy of self
+        :rtype: Point
+        """
+        ris = Point(self.curve, self.x, self.y)
+        ris.infinite = self.infinite
+        return ris
 
+    def __neg__(self):
+        """Arithmetic negation of a Point.
 
-def same_point(p1, p2):
-    return (p1.x == p2.x) and (p1.y == p2.y) and same_curve(p1.curve, p2.curve) and (p1.infinite == p2.infinite)
+        :return: -self
+        :rtype: Point
+        """
+        ris = Point(self.curve, self.x, -self.y % self.curve.prime)
+        return ris
+
+    def __add__(self, other):
+        """ Addition on Elliptic Curves.
+
+        :type other: Point
+        :return: self + other
+        :rtype: Point
+        """
+        ris = self.copy()
+        ris.add(other)
+        return ris
+
+    def __sub__(self, other):
+        """Subraction on Elliptic Curves.
+
+        :type other: Point
+        :return: self - other
+        :rtype: Point
+        """
+
+        ris = self.copy()
+        ris.add(-other)
+        return ris
+
+    def __mul__(self, other):
+        """Moltiplication on Elliptic Curve.
+
+        :param other: number >= 2
+        :type other: int
+        :returns: p = other * self (if other < 2 return self.copy())
+        :rtype: Point
+        """
+        if other == 2 and not self.infinite:
+            ris = self.copy()
+            ris.doubles()
+            return ris
+        elif other > 2 and not self.infinite:
+            temp = self.copy()
+            pointlist = [self]
+            i = 1
+            j = 0
+            while i < other:
+                j += 1
+                i *= 2
+                temp.doubles()
+                pointlist.append(temp.copy())
+            temp.infinite = True
+            while other > 0:
+                if other - i >= 0:
+                    temp.add(pointlist[j])
+                    other = other - i
+                j -= 1
+                i //= 2
+            return temp
+        else:
+            return self.copy()
+
+    def mul(self, other):
+        """Multiplies self without create a new Point.
+
+        :param other: number >=2
+        :type other: int
+        """
+        if other == 2 and not self.infinite:
+            self.doubles()
+        elif other > 2 and not self.infinite:
+            temp = self.copy()
+            pointlist = [self]
+            i = 1
+            j = 0
+            while i < other:
+                j += 1
+                i *= 2
+                temp.doubles()
+                pointlist.append(temp.copy())
+            temp.infinite = True
+            while other > 0:
+                if other - i >= 0:
+                    temp.add(pointlist[j])
+                    other = other - i
+                j -= 1
+                i //= 2
+            self.x = temp.x
+            self.y = temp.y
+            self.infinite = temp.infinite
+
+    def __bool__(self):
+        """Return not self == infinite.
+
+        :rtype: bool
+        """
+        return not self.infinite
+
+    def __str__(self):
+        return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\n' + self.curve.__str__()
+
+    def __repr__(self):
+        return 'x:' + self.x.__repr__() + ' y:' + self.y.__repr__() + ' ' + self.curve.__repr__()
 
 
 def are_opposites(p1, p2):
-    return (not p1.infinite) and (not p2.infinite) and same_curve(p1.curve, p2.curve) and (p1.x == p2.x) and (p1.y == -p2.y % p2.curve.prime)
+    """EC Point opposites control.
+
+    :type p1: Point
+    :type p2: Point
+    :return: p1 == -p2
+    :rtype: bool
+
+    not creates new object, more speed then p1 == -P2
+    """
+    return (not p1.infinite) and (not p2.infinite) and p1.curve == p2.curve and (p1.x == p2.x) and \
+           (p1.y == -p2.y % p2.curve.prime)
 
 
 class PointWOrder (Point):
-    """point with order"""
-    def __init__(self, curve, x, y, order):
-        super().__init__(curve, x, y)
+    """EC Point with order parameter.
+
+    :param curve: Curve object, the Elliptic Curve that contain the point
+    :parameter x: int abscissa
+    :parameter y: int ordinate
+    :param order: order of Point
+    :type order: int
+    """
+    def __init__(self, curve, x_init, y_init, order):
+        """
+
+        :param curve: Curve of the point
+        :type curve: Curve
+        :param x_init: abscissa
+        :type x_init: int
+        :param y_init: ordinata
+        :type y_init: int
+        :param order: order of Point
+        :type order: int
+        """
+        super().__init__(curve, x_init, y_init)
         self.order = order
+
+    def __str__(self):
+        return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\norder: ' + self.order.__repr__() + '\n' +\
+               self.curve.__str__()
+
+    def __repr__(self):
+        return 'x:' + self.x.__repr__() + ' y:' + self.y.__repr__() + ' order:' + self.order.__repr__() + ' ' + \
+               self.curve.__repr__()
