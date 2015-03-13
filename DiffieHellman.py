@@ -31,9 +31,9 @@ class DHkeycreator:
         """Take a Point as base.
 
         :param point: Point used as base, can be used a standard point from ECL_standardcurves
-        :type point: Point
+        :type point: PointWOrder
         """
-        self.point = point.copy()
+        self.point = point
 
     def step1(self):
         """Start protocol and return a Point to send to partner.
