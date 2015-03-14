@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0'
+__version__ = 'V.2.0.1'
 
 from ECL_class import *
 import os
@@ -33,7 +33,7 @@ class DHkeycreator:
         :param point: Point used as base, can be used a standard point from ECL_standardcurves
         :type point: PointWOrder
         """
-        self.point = point
+        self.point = point.copy()
 
     def step1(self):
         """Start protocol and return a Point to send to partner.

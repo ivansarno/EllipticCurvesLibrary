@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0'
+__version__ = 'V.2.0.1'
 
 from ECL_Auxfun import inverse
 
@@ -165,19 +165,19 @@ class Point:
             return ris
         elif other > 2 and not self.infinite:
             temp = self.copy()
-            pointlist = [self]
+            pointlist = [self]  # contains temp result for iterative version of mul
             i = 1
             j = 0
             while i < other:
                 j += 1
                 i *= 2
-                temp.doubles()
-                pointlist.append(temp.copy())
-            temp.infinite = True
-            while other > 0:
+                temp.doubles()  # generate intermediates protucts
+                pointlist.append(temp.copy())  # contains log other intermediates result
+            temp.infinite = True  # is set to add identity element
+            while other > 0:  # roll back and add intermediates protucts
                 if other - i >= 0:
                     temp.add(pointlist[j])
-                    other = other - i
+                    other -= i
                 j -= 1
                 i //= 2
             return temp
@@ -265,6 +265,16 @@ class PointWOrder (Point):
         super().__init__(curve, x_init, y_init)
         self.order = order
 
+    def copy(self):
+        """Return a copy of self.
+
+        :return: Point copy of self
+        :rtype: Point
+        """
+        ris = PointWOrder(self.curve, self.x, self.y, self.order)
+        ris.infinite = self.infinite
+        return ris
+
     def __str__(self):
         return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\norder: ' + self.order.__repr__() + '\n' +\
                self.curve.__str__()
@@ -272,3 +282,16 @@ class PointWOrder (Point):
     def __repr__(self):
         return 'x:' + self.x.__repr__() + ' y:' + self.y.__repr__() + ' order:' + self.order.__repr__() + ' ' + \
                self.curve.__repr__()
+
+
+# class InfPoint (Point):
+#   """ The Infinite Point."""
+ #   def __init__(self, curve):
+   #     """
+     #   :param curve: Curve object
+      #  """
+      #  super().__init__(curve, 0, 0)
+       # self.infinite = True
+
+    # def __str__(self):
+     #  return "Infinite Point"
