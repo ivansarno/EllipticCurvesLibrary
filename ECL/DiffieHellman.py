@@ -1,7 +1,11 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0.1'
+__version__ = 'V.2.1'
+__doc__ = """Diffie_Hellman's cipher.
 
-from ECL_class import *
+class:
+DHkeycreator
+"""
+
 import os
 
 #
@@ -26,7 +30,12 @@ def randint():
 #######
 
 class DHkeycreator:
-    """Object that creates and stores a key."""
+    """Object that creates and stores a key.
+
+    method:
+    -step1
+    -step2
+    """
     def __init__(self, point):
         """Take a Point as base.
 

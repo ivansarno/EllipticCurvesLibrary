@@ -4,7 +4,7 @@ __author__ = 'ivansarno'
 # These functions have been replaced by overloaded operators
 # may not be supported in the next release
 
-from ECL_class import *
+from ECL.Classes import*
 
 
 def duplication(point):

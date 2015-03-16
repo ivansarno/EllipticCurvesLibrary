@@ -1,16 +1,33 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0.1'
+__version__ = 'V.2.1'
+__doc__ = """Object Oriented Elliptic Curves implementation.
 
-from ECL_Auxfun import inverse
+class:
+-Curve
+-Point
+-PointWOrder (point with order)
+
+fun:
+infinitepoint
+are_opposites
+"""
+
+from ECL.Auxfun import inverse
 
 
 class Curve:
     """Prime Elliptic Curve.
 
+    member:
     :type a: int
     :type b: int
-    :parameter: prime:  prime number that define the field of the curve
+    prime:  prime number that define the field of the curve
     :type prime: int
+
+    method:
+    - __eq__
+    - __repr__
+    - __str__
     """
     def __init__(self, a_init, b_init, prime_init):
         """
@@ -43,9 +60,14 @@ class Curve:
 class Point:
     """Point of Curve.
 
-    :parameter curve: Curve object, the Elliptic Curve that contain the point
-    :parameter x: int abscissa
-    :parameter y: int ordinate
+    member:
+    curve: Curve object, the Elliptic Curve that contain the point
+    x: int abscissa
+    y: int ordinate
+
+    method:
+    __eq__, doubles, add, negation, copy, __neg__, __add__,
+    __sub__, __mul__, mul, __bool__, __str__, __repr__, are_opposites
     """
     def __init__(self, curve, x_init, y_init):
         """
@@ -135,9 +157,20 @@ class Point:
         :return: self + other
         :rtype: Point
         """
-        ris = self.copy()
-        ris.add(other)
-        return ris
+        if self.infinite:
+            return other.copy()
+        elif other.infinite:
+            return self.copy
+        elif self == other:
+            return self * 2
+        elif are_opposites(self, other):
+            return infinitepoint(self.curve)
+        else:
+            lam = ((other.y-self.y) * inverse(other.x-self.x, self.curve.prime)) % self.curve.prime
+            newx = ((lam**2)-self.x-other.x) % self.curve.prime
+            newy = (lam*(self.x-newx)-self.y) % self.curve.prime
+            ris = Point(self.curve, newx, newy)
+            return ris
 
     def __sub__(self, other):
         """Subraction on Elliptic Curves.
@@ -146,10 +179,20 @@ class Point:
         :return: self - other
         :rtype: Point
         """
-
-        ris = self.copy()
-        ris.add(-other)
-        return ris
+        if self.infinite:
+            return other.__neg__()
+        elif other.infinite:
+            return self.copy
+        elif are_opposites(self, other):
+            return self * 2
+        elif self == other:
+            return infinitepoint(self.curve)
+        else:
+            lam = (((-other.y % other.curve.prime)-self.y) * inverse(other.x-self.x, self.curve.prime)) % self.curve.prime
+            newx = ((lam**2)-self.x-other.x) % self.curve.prime
+            newy = (lam*(self.x-newx)-self.y) % self.curve.prime
+            ris = Point(self.curve, newx, newy)
+            return ris
 
     def __mul__(self, other):
         """Moltiplication on Elliptic Curve.
@@ -244,11 +287,12 @@ def are_opposites(p1, p2):
 class PointWOrder (Point):
     """EC Point with order parameter.
 
-    :param curve: Curve object, the Elliptic Curve that contain the point
-    :parameter x: int abscissa
-    :parameter y: int ordinate
-    :param order: order of Point
-    :type order: int
+    member:
+    curve: Curve object, the Elliptic Curve that contain the point
+    x: int abscissa
+    y: int ordinate
+    order: order of Point, if == -1 is a garbage value
+    order: int
     """
     def __init__(self, curve, x_init, y_init, order):
         """
@@ -275,6 +319,33 @@ class PointWOrder (Point):
         ris.infinite = self.infinite
         return ris
 
+    def add(self, p):
+        """ Add a Point to self without creates a new Point, set order = -1.
+
+        :type p: Point
+        """
+        super().add(p)
+        self.order = -1  # garbage value
+
+    def negation(self):
+        """Changes the sign of the Point and set order = -1."""
+        super().negation()
+        self.order = -1
+
+    def doubles(self):
+        """ Duplicates self without creates a new Point, set order = -1."""
+        super().doubles()
+        self.order = -1
+
+    def mul(self, other):
+        """Multiplies self without create a new Point, set order = -1.
+
+        :param other: number >=2
+        :type other: int
+        """
+        super().mul(other)
+        self.order = -1
+
     def __str__(self):
         return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\norder: ' + self.order.__repr__() + '\n' +\
                self.curve.__str__()
@@ -284,14 +355,13 @@ class PointWOrder (Point):
                self.curve.__repr__()
 
 
-# class InfPoint (Point):
-#   """ The Infinite Point."""
- #   def __init__(self, curve):
-   #     """
-     #   :param curve: Curve object
-      #  """
-      #  super().__init__(curve, 0, 0)
-       # self.infinite = True
+def infinitepoint(curve):
+    """Creates an infinite point of a Curve.
 
-    # def __str__(self):
-     #  return "Infinite Point"
+    :type curve: Curve
+    :return: infinite point of curve
+    :rtype: Point
+    """
+    i = Point(curve, 0, 0)
+    i.infinite = True
+    return i

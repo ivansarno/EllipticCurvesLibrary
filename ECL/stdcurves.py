@@ -1,7 +1,13 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0'
+__version__ = 'V.2.1'
+__doc__ = """Nist's standard curves and points
 
-from ECL_class import PointWOrder, Curve
+Points: PointP192, PointP224, PointP256, PointP384, PointP521
+Curves: CurveP192, CurveP225, CurveP256, CurveP384, CurveP521
+
+"""
+
+from ECL.Classes import PointWOrder, Curve
 # NIST standard curves and points (the number in the name is the bit of order)
 
 

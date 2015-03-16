@@ -1,11 +1,27 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.0'
+__version__ = 'V.2.1'
+__doc__ = """ElGamal's cipher and Koblitz's int_to_point algorithms.
 
-from ECL_class import *
-from ECL_Auxfun import is_square
+fun:
+-eg_keygen
+-eg_encrypt
+-eg_decrypt
+-koblitz_encode
+-koblitz_decode
+
+class:
+-EGkey
+-EGmessage
+"""
+
+
 import os
+
+from ECL.Classes import Point, infinitepoint
+from ECL.Auxfun import is_square
+
 #
-# EL Gamal public key cipher on Elliptic Curves and Koblitz algorithm
+# ELGamal public key cipher on Elliptic Curves and Koblitz algorithm
 
 #
 #  define of constant and replaceable function
@@ -39,8 +55,9 @@ def randfact():
 class EGkey:
     """Object that contain cipher's key.
 
-    :var: private private key
-    :var: public: public key
+    member:
+    private: private key
+    public: public key
     :type private: int
     :type public: int
     """
@@ -57,6 +74,7 @@ class EGkey:
 class EGmessage:
     """Cipher's message format.
 
+    member: v, w
     :type v: Point
     :type w: Point
     """
@@ -87,7 +105,7 @@ def eg_keygen(bpoint):
 
 
 def eg_encrypt(message, pubkey, stpoint):
-    """El Gamal encryption fun.
+    """ElGamal encryption fun.
 
     :param message: Point that expresses the message
     :param pubkey: Point used as puplic key
@@ -105,7 +123,7 @@ def eg_encrypt(message, pubkey, stpoint):
 
 
 def eg_decrypt(message, key):
-    """El Gamal decryption fun
+    """ElGamal decryption fun
 
     :type message: EGmessage
     :type key: EGkey
@@ -140,9 +158,7 @@ def koblitz_encode(msg, padding, curve):
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
             return Point(curve, x, y)
-    nil = Point(curve, 0, 0)
-    nil.infinite = True
-    return nil
+    return infinitepoint(curve)
 
 
 def koblitz_decode(point, padding):
