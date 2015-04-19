@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.1'
+__version__ = 'V.2.2'
 __doc__ = """Nist's standard curves and points
 
 Points: PointP192, PointP224, PointP256, PointP384, PointP521

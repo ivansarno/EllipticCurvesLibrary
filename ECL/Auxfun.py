@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.1'
+__version__ = 'V.2.2'
 #
 # implementation of Extended Euclide algorithm, inverse calculation and modular square check
 

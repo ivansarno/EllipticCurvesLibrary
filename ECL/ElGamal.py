@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.1'
+__version__ = 'V.2.2'
 __doc__ = """ElGamal's cipher and Koblitz's int_to_point algorithms.
 
 fun:
@@ -8,16 +8,20 @@ fun:
 -eg_decrypt
 -koblitz_encode
 -koblitz_decode
+-iterative_koblitz
 
 class:
 -EGkey
 -EGmessage
+
+exeption:
+-KoblitzFailError
 """
 
 
 import os
 
-from ECL.Classes import Point, infinitepoint
+from ECL.Classes import Point
 from ECL.Auxfun import is_square
 
 #
@@ -144,8 +148,9 @@ def koblitz_encode(msg, padding, curve):
     :type padding: int
     :param curve: Curve of point returned
     :type curve: Curve
-    :return: Point of curve or Point with infinite == True if algorithm fail
+    :return: Point of curve
     :rtype: Point
+    :raise: KoblitzFailError
     """
     if msg * (padding + 1) < curve.prime:
         msg *= padding
@@ -158,7 +163,7 @@ def koblitz_encode(msg, padding, curve):
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
             return Point(curve, x, y)
-    return infinitepoint(curve)
+    raise KoblitzFailError("point not found")
 
 
 def koblitz_decode(point, padding):
@@ -172,3 +177,33 @@ def koblitz_decode(point, padding):
     :rtype: int
     """
     return point.x // padding
+
+
+class KoblitzFailError(Exception):
+    """Koblitz algorithm fail, point not found."""
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value.__repr__()
+
+
+def iterative_koblitz(msg, curve):
+    """ Conversion int to Point by iterating koblitz_encode until find a point.
+    :param msg: message
+    :type msg: int
+    :param curve: Curve of point returned
+    :type curve: Curve
+    :return: (point, padding)
+    :rtype: Point * int
+    """
+    found = False
+    padding = 1
+    while not found:
+        try:
+            point = koblitz_encode(msg, padding, curve)
+        except KoblitzFailError:
+            padding += 1
+        else:
+            found = True
+    return point, padding
