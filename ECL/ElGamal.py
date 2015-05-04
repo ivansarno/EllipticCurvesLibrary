@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.2'
+__version__ = 'V.2.3'
 __doc__ = """ElGamal's cipher and Koblitz's int_to_point algorithms.
 
 fun:
@@ -138,9 +138,14 @@ def eg_decrypt(message, key):
     v.negation()
     return message.w + v
 
+#
+# AAA this implementation of Kobitz algorithm work only whene prime field of curve = 3 mod 4
+# it work whit stdcurves exept P224
+# raise KoblitzFailError
+
 
 def koblitz_encode(msg, padding, curve):
-    """Conversion int to Point using Koblitz algorithm.
+    """Conversion int to Point using Koblitz algorithm. Raise KoblitzFailError.
 
     :param msg: message
     :type msg: int
@@ -152,6 +157,8 @@ def koblitz_encode(msg, padding, curve):
     :rtype: Point
     :raise: KoblitzFailError
     """
+    if curve.prime % 4 != 3:
+        raise KoblitzFailError("curve.prime % 4 != 3")
     if msg * (padding + 1) < curve.prime:
         msg *= padding
         i = 0
@@ -162,7 +169,8 @@ def koblitz_encode(msg, padding, curve):
             x = msg + i
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
-            return Point(curve, x, y)
+            ex = pow(y, (curve.prime + 1) // 4, curve.prime)
+            return Point(curve, x, ex)
     raise KoblitzFailError("point not found")
 
 

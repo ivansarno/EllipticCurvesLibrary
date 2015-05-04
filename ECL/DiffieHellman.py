@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.2'
+__version__ = 'V.2.3'
 __doc__ = """Diffie_Hellman's cipher.
 
 class:

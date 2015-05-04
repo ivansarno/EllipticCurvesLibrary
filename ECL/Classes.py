@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.2.2'
+__version__ = 'V.2.3'
 __doc__ = """Object Oriented Elliptic Curves implementation.
 
 class:
@@ -67,7 +67,7 @@ class Point:
 
     method:
     __eq__, doubles, add, negation, copy, __neg__, __add__,
-    __sub__, __mul__, mul, __bool__, __str__, __repr__, are_opposites
+    __sub__, __mul__, mul, __bool__, __str__, __repr__, are_opposites, check
     """
     def __init__(self, curve, x_init, y_init):
         """
@@ -255,6 +255,20 @@ class Point:
             self.x = temp.x
             self.y = temp.y
             self.infinite = temp.infinite
+
+    def check(self, curve):
+        """Check if self is a valid point of curve.
+        :param curve: curve whose membership test point
+        :type curve: Curve
+        :return: True if self is a valid point of curve
+        :rtype: bool
+        """
+        control =  self.curve == curve and type(self.x) == type(curve.a) and type(self.y) == type(curve.b)
+        if not control:
+            return False
+        y = (self.x**3 + curve.a * self.x + curve.b) % curve.prime
+        return y == (self.y ** 2) % curve.prime
+
 
     def __bool__(self):
         """Return not self == infinite.
