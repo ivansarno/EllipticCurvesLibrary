@@ -35,6 +35,7 @@ class DHkeycreator:
     method:
     -step1
     -step2
+    -returnkey
     """
     def __init__(self, point):
         """Take a Point as base.

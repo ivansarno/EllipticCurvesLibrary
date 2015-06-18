@@ -18,16 +18,16 @@ def extended_euclide(a, b):
     return temp[0], temp[2], temp[1] - (a // b) * temp[2]
 
 
-def inverse(a, b):
-    """Inverse operatin in modular arihtmetic.
+def inverse(number, module):
+    """Inverse operation in modular arihtmetic.
 
-    :type a: int
+    :type number: int
     :param b: module
-    :type b: int
-    :return: inverse of a mod b
+    :type module: int
+    :return: inverse of number mod module
     :rtype: int
     """
-    temp = extended_euclide(a, b)
+    temp = extended_euclide(number, module)
     return temp[1]
 
 

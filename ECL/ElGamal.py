@@ -69,7 +69,7 @@ class EGkey:
         """
 
         :param priv: int private key
-        :param pub: Point puplic key
+        :param pub: Point public key
         """
         self.public = pub
         self.private = priv
@@ -112,7 +112,7 @@ def eg_encrypt(message, pubkey, stpoint):
     """ElGamal encryption fun.
 
     :param message: Point that expresses the message
-    :param pubkey: Point used as puplic key
+    :param pubkey: Point used as public key
     :param stpoint: Point used as base, can be used a standard point from ECL_standardcurves
     :type message: Point
     :type pubkey: Point
