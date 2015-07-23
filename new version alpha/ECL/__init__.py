@@ -1,6 +1,6 @@
 __author__ = 'ivansarno'
 __version__ = 'V.3.0'
-__all__ = ["Curve", "Point", "PointWithOrder", "DiffieHellman", "stdcurves", "ElGamal", "Auxfun"]
+__all__ = ["Curve", "Point", "PointWithOrder", "DiffieHellman", "stdcurves", "ElGamal", "Koblitz", "Auxfun"]
 __doc__ = """ ECL: library includes basic operation on Elliptic curves and 2 cipher.
 
 includes:
