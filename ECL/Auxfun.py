@@ -1,7 +1,8 @@
+import os
 __author__ = 'ivansarno'
-__version__ = 'V.2.3'
-#
-# implementation of Extended Euclide algorithm, inverse calculation and modular square check
+__version__ = 'V.3.0'
+__doc__ = """ built-in random number generator,
+implementation of Extended Euclide algorithm, inverse calculation and modular square check"""
 
 
 def extended_euclide(a, b):
@@ -22,7 +23,7 @@ def inverse(number, module):
     """Inverse operation in modular arihtmetic.
 
     :type number: int
-    :param b: module
+    :param module: module
     :type module: int
     :return: inverse of number mod module
     :rtype: int
@@ -45,3 +46,21 @@ def is_square(num, module):
         return True
     else:
         return False
+
+
+class Generator:
+    """built-in random number generator.
+
+        method:
+            get(int) -> int
+    """
+
+    @staticmethod
+    def get(size):
+        """ return a andom number.
+
+    :return: random int of size bit
+    :rtype: int
+    """
+        temp = os.urandom(size // 8)
+        return int.from_bytes(temp, 'little')

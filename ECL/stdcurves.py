@@ -1,14 +1,15 @@
+from ECL.Curve import Curve
+from ECL.PointWithOrder import PointWOrder
+
 __author__ = 'ivansarno'
-__version__ = 'V.2.3'
+__version__ = 'V.3.0'
 __doc__ = """Nist's standard curves and points
 
+(the number in the name is the bit of order)
 Points: PointP192, PointP224, PointP256, PointP384, PointP521
 Curves: CurveP192, CurveP225, CurveP256, CurveP384, CurveP521
 
 """
-
-from ECL.Classes import PointWOrder, Curve
-# NIST standard curves and points (the number in the name is the bit of order)
 
 
 class CurveP192 (Curve):
