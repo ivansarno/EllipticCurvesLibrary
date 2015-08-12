@@ -18,7 +18,7 @@ class DiffieHellman:
     -returnkey
     """
 
-    def __init__(self, base_point, curve_size, generator=Auxfun.Generator()):
+    def __init__(self, base_point, curve_size, generator=None):
         """Take a Point as base.
 
         :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
@@ -26,11 +26,15 @@ class DiffieHellman:
         :param curve_size: nember of bit of order of the curve
         :type curve_size: int
         :param generator: random number generator, by default use built-in generator
-        :type generator: must have a method get(int size) -> int that return a random integer of size bit
+        :type generator: ECL.Auxfun.Generator
         """
+        if generator is None:
+            generator = Auxfun.Generator()
         self.point = base_point.copy()
         self.size = curve_size
         self.gen = generator
+        self.secret = None
+        self.key = None
 
     def step1(self):
         """Start protocol and return a Point to send to partner.

@@ -71,15 +71,16 @@ def iterative_encode(msg, curve):
     :return: (point, padding)
     :rtype: Point * int
     """
-    found = False
+    not_found = True
+    point = None
     padding = 1
-    while not found:
+    while not_found:
         try:
             point = encode(msg, padding, curve)
         except KoblitzFailError:
             padding += 1
         else:
-            found = True
+            not_found = False
     return point, padding
 
 
