@@ -1,6 +1,6 @@
 from ECL.Point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
+__version__ = 'V.3.1'
 __doc__ = """Point with extra member, the order"""
 
 
@@ -67,9 +67,13 @@ class PointWOrder (Point):
         self.order = -1
 
     def __str__(self):
-        return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\norder: ' + self.order.__repr__() + '\n' +\
-               self.curve.__str__()
+        if self.order < 0:
+            return super().__str__()
+        else:
+            return "x: %x\ny: %x\norder: %x\n" % (self.x, self.y, self.order) + self.curve.__str__()
 
     def __repr__(self):
-        return 'x:' + self.x.__repr__() + ' y:' + self.y.__repr__() + ' order:' + self.order.__repr__() + ' ' + \
-               self.curve.__repr__()
+        if self.order < 0:
+            return super().__repr__()
+        else:
+            return "PointWOrder(%s, 0x%x, 0x%x, 0x%x)" % (self.curve.__repr__(), self.x, self.y, self.order)

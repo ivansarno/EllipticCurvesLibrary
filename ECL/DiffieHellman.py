@@ -1,7 +1,7 @@
 from ECL import Auxfun
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
+__version__ = 'V.3.1'
 __doc__ = """Diffie-Hellman's public key system.
 
 class:
@@ -18,18 +18,18 @@ class DiffieHellman:
     -returnkey
     """
 
-    def __init__(self, base_point, curve_size, generator=None):
+    def __init__(self, base_point, curve_size, generator=Auxfun.generator):
         """Take a Point as base.
 
         :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
         :type base_point: PointWOrder
         :param curve_size: nember of bit of order of the curve
         :type curve_size: int
-        :param generator: random number generator, by default use built-in generator
-        :type generator: ECL.Auxfun.Generator
+        :param generator: random number generator, return a rondom int of size passed by parameter,
+        use the built-in by default
+        :type generator: int -> int
         """
-        if generator is None:
-            generator = Auxfun.Generator()
+
         self.point = base_point.copy()
         self.size = curve_size
         self.gen = generator
@@ -42,7 +42,7 @@ class DiffieHellman:
         :return: Point to sand to partner
         :rtype: Point
         """
-        self.secret = self.gen.get(self.size) % self.point.order
+        self.secret = self.gen(self.size) % self.point.order
         return self.point * self.secret
 
     def step2(self, partnerpoint):

@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
+__version__ = 'V.3.1'
 __doc__ = """Implemetation of Prime Elliptic Curves"""
 
 
@@ -49,7 +49,7 @@ class Curve:
         return ris
 
     def __str__(self):
-        return 'a: ' + self.a.__repr__() + '\nb: ' + self.b.__repr__() + '\nprime: ' + self.prime.__repr__()
+        return "a: %x\nb: %x\nprime: %x\n" % (self.a, self.b, self.prime)
 
     def __repr__(self):
-        return 'a:' + self.a.__repr__() + ' b:' + self.b.__repr__() + ' prime:' + self.prime.__repr__()
+        return "Curve(0x%x, 0x%x, 0x%x)" % (self.a, self.b, self.prime)

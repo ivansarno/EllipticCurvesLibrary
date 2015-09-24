@@ -1,7 +1,7 @@
 import os
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
-__doc__ = """ built-in random number generator,
+__version__ = 'V.3.1'
+__doc__ = """ built-in random number generator, root exception,
 implementation of Extended Euclide algorithm, inverse calculation and modular square check"""
 
 
@@ -48,19 +48,22 @@ def is_square(num, module):
         return False
 
 
-class Generator:
-    """built-in random number generator.
+def generator(size):
+        """ return a random number.
 
-        method:
-            get(int) -> int
-    """
-
-    @staticmethod
-    def get(size):
-        """ return a andom number.
-
+    :param size: number of bit of random number
+    :type size: int
     :return: random int of size bit
     :rtype: int
     """
         temp = os.urandom(size // 8)
         return int.from_bytes(temp, 'little')
+
+
+class EclException(Exception):
+    """Koblitz algorithm fail, point not found."""
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value.__repr__()

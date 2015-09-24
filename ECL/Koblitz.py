@@ -1,8 +1,8 @@
-from ECL.Auxfun import is_square
+from ECL.Auxfun import is_square, EclException
 from ECL.Point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
+__version__ = 'V.3.1'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:
@@ -10,7 +10,7 @@ functions:
 -decode
 -iterative_encode
 
-exeptions:
+exceptions:
 -KoblitzFailError
 """
 
@@ -84,7 +84,7 @@ def iterative_encode(msg, curve):
     return point, padding
 
 
-class KoblitzFailError(Exception):
+class KoblitzFailError(EclException):
     """Koblitz algorithm fail, point not found."""
     def __init__(self, value):
         self.value = value

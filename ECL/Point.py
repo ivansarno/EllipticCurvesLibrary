@@ -1,7 +1,7 @@
 from ECL.Auxfun import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.0'
+__version__ = 'V.3.1'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes:
@@ -235,10 +235,10 @@ class Point:
         return not self.infinite
 
     def __str__(self):
-        return 'x: ' + self.x.__repr__() + '\ny: ' + self.y.__repr__() + '\n' + self.curve.__str__()
+        return "x: %x\ny: %x\n" % (self.x, self.y) + self.curve.__str__()
 
     def __repr__(self):
-        return 'x:' + self.x.__repr__() + ' y:' + self.y.__repr__() + ' ' + self.curve.__repr__()
+        return "Point(%s, %x, %x)" % (self.curve.__repr__(), self.x, self.y)
 
 
 def are_opposites(p1, p2):
