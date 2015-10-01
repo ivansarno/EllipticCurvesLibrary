@@ -2,7 +2,7 @@ from ECL.Auxfun import is_square, EclException
 from ECL.Point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.1'
+__version__ = 'V.3.2'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:
@@ -71,6 +71,9 @@ def iterative_encode(msg, curve):
     :return: (point, padding)
     :rtype: Point * int
     """
+
+    if curve.prime % 4 != 3:
+        raise KoblitzFailError("curve.prime % 4 != 3")
     not_found = True
     point = None
     padding = 1

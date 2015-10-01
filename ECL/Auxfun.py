@@ -1,6 +1,6 @@
 import os
 __author__ = 'ivansarno'
-__version__ = 'V.3.1'
+__version__ = 'V.3.2'
 __doc__ = """ built-in random number generator, root exception,
 implementation of Extended Euclide algorithm, inverse calculation and modular square check"""
 

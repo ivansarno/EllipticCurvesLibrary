@@ -2,7 +2,7 @@ from ECL import Auxfun
 from ECL.Point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.1'
+__version__ = 'V.3.2'
 __doc__ = """ElGamal's cipher.
 
 fun:

@@ -1,7 +1,7 @@
 from ECL.Auxfun import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.1'
+__version__ = 'V.3.2'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes:

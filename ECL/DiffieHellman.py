@@ -1,7 +1,7 @@
 from ECL import Auxfun
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.1'
+__version__ = 'V.3.2'
 __doc__ = """Diffie-Hellman's public key system.
 
 class:
