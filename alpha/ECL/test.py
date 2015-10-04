@@ -6,26 +6,24 @@ __author__ = 'ivansarno'
 __version__ = 'V.4.alpha'
 __doc__ = """Test for package's function"""
 
+
 # AAA koblitz algorithm not work wit CurveP224
-# __curve and point used for tests
-curve = ECL.std_curves.CurveP192
-point = ECL.std_curves.PointP192
-size = 192
 
 
-def test():
+def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, size=192):
+    """AAA koblitz algorithm not work wit CurveP224"""
     try:
-        test_arithmetic()
-        test_diffie_hellman()
-        test_el_gamal_koblitz()
-        test_representation()
+        test_arithmetic(curve, point)
+        test_diffie_hellman(point, size)
+        test_el_gamal_koblitz(curve, point, size)
+        test_representation(curve, point)
     except ECL.EclException:
         print("test ERROR: EclException Raised")
     except Exception:
         print("test ERROR: Other Exception Raised")
 
 
-def test_diffie_hellman():
+def test_diffie_hellman(point=ECL.std_curves.PointP192, size=192):
     user1 = ECL.DiffieHellman(point(), size)
     user2 = ECL.DiffieHellman(point(), size)
     message1 = user1.step1()
@@ -38,7 +36,8 @@ def test_diffie_hellman():
         print("test diffie-hellman ERROR")
 
 
-def test_el_gamal_koblitz():
+def test_el_gamal_koblitz(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, size=192):
+    """AAA koblitz algorithm not work wit CurveP224"""
     key = ECL.elgamal.keygen(point(), size)
     message = 1234
     m = ECL.koblitz.iterative_encode(message, curve())
@@ -51,7 +50,7 @@ def test_el_gamal_koblitz():
         print("test el_gamal_koblitzn ERROR")
 
 
-def test_representation():
+def test_representation(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192):
     c = curve()
     p = point()
     c1 = eval(c.__repr__())
@@ -62,10 +61,10 @@ def test_representation():
         print("test representation ERROR")
 
 
-def test_arithmetic():
+def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192):
     inf = ECL.point.Point.infinitepoint(curve())
     p = point()
-    cond1 = (p * 3) == ((p+p+p+p+p) - (p * 2))
+    cond1 = (p * 3) == ((p + p + p + p + p) - (p * 2))
     cond2 = (-p) == (inf - p)
     if not inf and cond1 and cond2:
         print("test arithmetic OK")

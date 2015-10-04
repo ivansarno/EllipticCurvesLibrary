@@ -1,4 +1,5 @@
-from ECL import utility
+from typing import Callable
+from ECL import utility, PointWOrder, Point
 
 __author__ = 'ivansarno'
 __version__ = 'V.4.alpha'
@@ -18,16 +19,13 @@ class DiffieHellman:
     -returnkey
     """
 
-    def __init__(self, base_point, curve_size, generator=utility.generator):
+    def __init__(self, base_point: PointWOrder, curve_size: int, generator: Callable[[int], int]=utility.generator):
         """Take a Point as base.
 
         :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
-        :type base_point: PointWOrder
-        :param curve_size: nember of bit of order of the __curve
-        :type curve_size: int
+        :param curve_size: nember of bit of order of the curve
         :param generator: random number generator, return a rondom int of size passed by parameter,
         use the built-in by default
-        :type generator: int -> int
         """
 
         self.point = base_point.copy()
@@ -36,29 +34,25 @@ class DiffieHellman:
         self.secret = None
         self.key = None
 
-    def step1(self):
+    def step1(self) -> Point:
         """Start protocol and return a Point to send to partner.
 
         :return: Point to sand to partner
-        :rtype: Point
         """
         self.secret = self.gen(self.size) % self.point.order
         return self.point * self.secret
 
-    def step2(self, partnerpoint):
+    def step2(self, partnerpoint: Point) -> Point:
         """Take result of partener step1 and return the key as Point
 
-        :type partnerpoint: Point
         :param partnerpoint: Point received by partner
         :return: the key
-        :rtype: Point
         """
         self.key = partnerpoint * self.secret
         return self.key
 
-    def returnkey(self):
+    def returnkey(self) -> Point:
         """
         :return: the key
-        :rtype: Point
         """
         return self.key

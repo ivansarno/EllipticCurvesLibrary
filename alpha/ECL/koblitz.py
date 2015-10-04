@@ -1,3 +1,5 @@
+from typing import Tuple
+from ECL import Curve
 from ECL.utility import is_square, EclException
 from ECL.point import Point
 
@@ -15,7 +17,7 @@ exceptions:
 """
 
 
-def encode(msg, padding, curve):
+def encode(msg: int, padding: int, curve: Curve) -> Point:
     """Conversion int to Point using Koblitz algorithm.
 
 AAA this implementation of Kobitz algorithm work only whene prime field of curve = 3 mod 4
@@ -23,13 +25,9 @@ it work whit stdcurves except P224
 raise KoblitzFailError
 
     :param msg: message
-    :type msg: int
     :param padding: express the padding and number of maximum attempts
-    :type padding: int
     :param curve: Curve of point returned
-    :type curve: Curve
     :return: Point of curve
-    :rtype: Point
     :raise: KoblitzFailError
     """
     if curve.prime % 4 != 3:
@@ -49,27 +47,22 @@ raise KoblitzFailError
     raise KoblitzFailError("point not found")
 
 
-def decode(point, padding):
+def decode(point: Point, padding: int) -> int:
     """Converts Point to int deleting the padding.
 
     :param point: Point that contain a message
-    :type point: Point
     :param padding: padding used to create the Point
-    :type padding: int
     :return: the message, abscissa of point without the padding
-    :rtype: int
     """
     return point.x // padding
 
 
-def iterative_encode(msg, curve):
+def iterative_encode(msg: int, curve: Curve) -> Tuple[Point, int]:
     """ Conversion int to Point by iterating koblitz_encode until find a point.
+
     :param msg: message
-    :type msg: int
     :param curve: Curve of point returned
-    :type curve: Curve
     :return: (point, padding)
-    :rtype: Point * int
     """
     if curve.prime % 4 != 3:
         raise KoblitzFailError("curve.prime % 4 != 3")
