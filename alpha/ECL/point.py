@@ -1,3 +1,4 @@
+from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
@@ -9,32 +10,23 @@ classes:
 
 Functions:
 -are_opposites
--infinitepoint
 """
 
 
 class Point:
     """Point of Curve.
 
-    member:
-    __curve: Curve object, the Elliptic Curve that contain the point
-    __x: int abscissa
-    __y: int ordinate
-
     method:
     __eq__, _doubles, _add, _negation, copy, __neg__, __add__,
     __sub__, __mul__, _mul, __bool__, __str__, __repr__, are_opposites, check
     """
 
-    def __init__(self, curve, x_init, y_init):
+    def __init__(self, curve: Curve, x_init: int, y_init: int):
         """
 
         :param curve: Curve object
         :param x_init: abscissa
         :param y_init: ordinate
-        :type curve: Curve
-        :type x_init: int
-        :type y_init: int
         """
         self.__curve = curve
         self.__x = x_init
@@ -42,15 +34,15 @@ class Point:
         self.__infinite = False
 
     @property
-    def x(self):
+    def x(self) -> int:
         return self.__x
 
     @property
-    def y(self):
+    def y(self) -> int:
         return self.__y
 
     @property
-    def curve(self):
+    def curve(self) -> Curve:
         return self.__curve
 
     def __eq__(self, other):
@@ -165,11 +157,10 @@ class Point:
             ris = Point(self.__curve, newx, newy)
             return ris
 
-    def __mul__(self, other):
+    def __mul__(self, other: int):
         """Moltiplication on Elliptic Curve.
 
         :param other: number >= 2
-        :type other: int
         :returns: p = other * self (if other < 2 return self.copy())
         :rtype: Point
         """
@@ -198,11 +189,10 @@ class Point:
         else:
             return self.copy()
 
-    def _mul(self, other):
+    def _mul(self, other: int):
         """Multiplies self without create a new Point.
 
         :param other: number >=2
-        :type other: int
         """
         if other == 2 and not self.__infinite:
             self._doubles()
@@ -227,12 +217,11 @@ class Point:
             self.__y = temp.__y
             self.__infinite = temp.__infinite
 
-    def check(self, curve):
+    def check(self, curve: Curve) -> bool:
         """Check if self is a valid point of __curve.
-        :param curve: __curve whose membership tested point
-        :type curve: Curve
-        :return: True if self is a valid point of __curve
-        :rtype: bool
+
+        :param curve: curve whose membership tested point
+        :return: True if self is a valid point of curve
         """
 
         if not self.__curve == curve:
@@ -241,17 +230,15 @@ class Point:
         return y == (self.__y ** 2) % curve.prime
 
     def __bool__(self):
-        """Return not self == __infinite.
+        """Return not self == infinite.
 
-        :rtype: bool
         """
         return not self.__infinite
 
     @staticmethod
-    def infinitepoint(curve):
+    def infinitepoint(curve: Curve):
         """Creates an infinite point of a Curve.
 
-        :type curve: Curve
         :return: infinite point of curve
         :rtype: Point
         """
@@ -266,13 +253,10 @@ class Point:
         return "Point(%s, %x, %x)" % (self.__curve.__repr__(), self.__x, self.__y)
 
 
-def are_opposites(p1, p2):
+def are_opposites(p1: Point, p2: Point) -> bool:
     """EC Point opposites control.
 
-    :type p1: Point
-    :type p2: Point
     :return: p1 == -p2
-    :rtype: bool
 
     not creates new object, more speed then p1 == -P2
     """

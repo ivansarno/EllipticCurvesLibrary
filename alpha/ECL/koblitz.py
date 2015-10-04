@@ -1,5 +1,5 @@
 from typing import Tuple
-from ECL import Curve
+from ECL.curve import Curve
 from ECL.utility import is_square, EclException
 from ECL.point import Point
 

@@ -1,5 +1,7 @@
 from typing import Callable
-from ECL import utility, PointWOrder, Point
+from ECL import utility
+from ECL.point import Point
+from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
 __version__ = 'V.4.alpha'

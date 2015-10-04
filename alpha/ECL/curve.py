@@ -6,40 +6,31 @@ __doc__ = """Implemetation of Prime Elliptic Curves"""
 class Curve:
     """Prime Elliptic Curve.
 
-    member:
-    :type __a: int
-    :type __b: int
-    prime:  prime number that define the field of the __curve
-    :type __prime: int
-
     method:
     - __eq__
     - copy
     - __repr__
     - __str__
     """
-    def __init__(self, a_init, b_init, prime_init):
+    def __init__(self, a_init: int, b_init: int, prime_init: int):
         """
 
-        :type a_init: int
-        :type b_init: int
         :param prime_init: prime number
-        :type prime_init: int
         """
         self.__a = a_init
         self.__b = b_init
         self.__prime = prime_init
 
     @property
-    def a(self):
+    def a(self) -> int:
         return self.__a
 
     @property
-    def b(self):
+    def b(self) -> int:
         return self.__b
 
     @property
-    def prime(self):
+    def prime(self) -> int:
         return self.__prime
 
     def __eq__(self, other):
