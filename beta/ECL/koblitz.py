@@ -4,7 +4,7 @@ from ECL.utility import is_square, EclException
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:
@@ -17,29 +17,27 @@ exceptions:
 """
 
 
-def encode(msg: int, padding: int, curve: Curve) -> Point:
+def encode(message: int, padding: int, curve: Curve) -> Point:
     """Conversion int to Point using Koblitz algorithm.
 
 AAA this implementation of Kobitz algorithm work only whene prime field of curve = 3 mod 4
 it work whit stdcurves except P224
 raise KoblitzFailError
 
-    :param msg: message
-    :param padding: express the padding and number of maximum attempts
     :param curve: Curve of point returned
     :return: Point of curve
     :raise: KoblitzFailError
     """
     if curve.prime % 4 != 3:
         raise KoblitzFailError("curve.prime % 4 != 3")
-    if msg * (padding + 1) < curve.prime:
-        msg *= padding
+    if message * (padding + 1) < curve.prime:
+        message *= padding
         i = 0
-        x = msg
+        x = message
         y = (x**3 + curve.a * x + curve.b) % curve.prime
         while (not is_square(y, curve.prime)) and i < padding:
             i += 1
-            x = msg + i
+            x = message + i
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
             ex = pow(y, (curve.prime + 1) // 4, curve.prime)
@@ -57,10 +55,9 @@ def decode(point: Point, padding: int) -> int:
     return point.x // padding
 
 
-def iterative_encode(msg: int, curve: Curve) -> Tuple[Point, int]:
+def iterative_encode(message: int, curve: Curve) -> Tuple[Point, int]:
     """ Conversion int to Point by iterating koblitz_encode until find a point.
 
-    :param msg: message
     :param curve: Curve of point returned
     :return: (point, padding)
     """
@@ -71,7 +68,7 @@ def iterative_encode(msg: int, curve: Curve) -> Tuple[Point, int]:
     padding = 1
     while not_found:
         try:
-            point = encode(msg, padding, curve)
+            point = encode(message, padding, curve)
         except KoblitzFailError:
             padding += 1
         else:

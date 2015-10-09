@@ -4,7 +4,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """Diffie-Hellman's public key system.
 
 class:
@@ -22,27 +22,25 @@ class DiffieHellman:
     """
 
     def __init__(self, base_point: PointWOrder, curve_size: int, generator: Callable[[int], int]=utility.generator):
-        """Take a Point as base.
-
+        """
         :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
         :param curve_size: nember of bit of order of the curve
-        :param generator: random number generator, return a rondom int of size passed by parameter,
+        :param generator: random number generator, return a random int of size passed by parameter,
         use the built-in by default
         """
 
-        self.point = base_point.copy()
-        self.size = curve_size
-        self.gen = generator
-        self.secret = None
-        self.key = None
+        self.__point = base_point
+        self.__size = curve_size
+        self.__gen = generator
+        self.__secret = self.__gen(self.__size) % self.__point.order
+        self.__key = None
 
     def step1(self) -> Point:
         """Start protocol and return a Point to send to partner.
 
         :return: Point to sand to partner
         """
-        self.secret = self.gen(self.size) % self.point.order
-        return self.point * self.secret
+        return self.__point * self.__secret
 
     def step2(self, partnerpoint: Point) -> Point:
         """Take result of partener step1 and return the key as Point
@@ -50,11 +48,12 @@ class DiffieHellman:
         :param partnerpoint: Point received by partner
         :return: the key
         """
-        self.key = partnerpoint * self.secret
-        return self.key
+        self.__key = partnerpoint * self.__secret
+        return self.__key
 
-    def returnkey(self) -> Point:
+    @property
+    def key(self) -> Point:
         """
-        :return: the key
+        :return: the key or None if step2 has not been executed
         """
-        return self.key
+        return self.__key

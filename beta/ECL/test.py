@@ -3,8 +3,8 @@ from ECL import *
 from ECL import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
-__doc__ = """Test for package's function"""
+__version__ = 'V.4.beta'
+__doc__ = """Test for package's feature"""
 
 
 # AAA koblitz algorithm not work wit CurveP224
@@ -30,7 +30,7 @@ def test_diffie_hellman(point=ECL.std_curves.PointP192, size=192):
     message2 = user2.step1()
     user2.step2(message1)
     user1.step2(message2)
-    if user1.returnkey() == user2.returnkey():
+    if user1.key == user2.key:
         print("test diffie-hellman OK")
     else:
         print("test diffie-hellman ERROR")

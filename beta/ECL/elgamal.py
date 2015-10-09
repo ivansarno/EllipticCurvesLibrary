@@ -4,7 +4,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """ElGamal's cipher.
 
 fun:

@@ -1,7 +1,7 @@
 from ECL.curve import Curve
 from ECL.point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """Point with extra member, the order"""
 
 
@@ -22,14 +22,13 @@ class PointWOrder (Point):
         self.__order = order
 
     @property
-    def order(self):
+    def order(self) -> int:
         return self.__order
 
-    def copy(self):
+    def copy(self) -> Point:
         """Return a copy of self.
 
-        :return: Point copy of self
-        :rtype: Point
+        :return: Point copy of self, if order is defined return a PointWOrder
         """
 
         if self.__bool__():
@@ -40,11 +39,8 @@ class PointWOrder (Point):
         else:
             return Point.infinitepoint(self.curve)
 
-    def _add(self, p):
-        """ Add a Point to self without creates a new Point, set order = -1.
-
-        :type p: Point
-        """
+    def _add(self, p: Point):
+        """ Add a Point to self without creates a new Point, set order = -1."""
         super()._add(p)
         self.__order = -1  # garbage value
 
@@ -58,11 +54,10 @@ class PointWOrder (Point):
         super()._doubles()
         self.__order = -1
 
-    def _mul(self, other):
+    def _mul(self, other: int):
         """Multiplies self without create a new Point, set order = -1.
 
         :param other: number >=2
-        :type other: int
         """
         super()._mul(other)
         self.__order = -1

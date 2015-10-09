@@ -2,7 +2,7 @@ import os
 from typing import Tuple
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """ built-in random number generator, root exception,
 implementation of Extended Euclide algorithm, inverse calculation and modular square check"""
 

@@ -1,10 +1,15 @@
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """Implemetation of Prime Elliptic Curves"""
 
 
 class Curve:
     """Prime Elliptic Curve.
+
+    member:
+    -a
+    -b
+    -prime
 
     method:
     - __eq__

@@ -2,7 +2,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.alpha'
+__version__ = 'V.4.beta'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes:
@@ -18,7 +18,7 @@ class Point:
 
     method:
     __eq__, _doubles, _add, _negation, copy, __neg__, __add__,
-    __sub__, __mul__, _mul, __bool__, __str__, __repr__, are_opposites, check
+    __sub__, __mul__, _mul, __bool__, __str__, __repr__, check, infinitepoint
     """
 
     def __init__(self, curve: Curve, x_init: int, y_init: int):
@@ -50,7 +50,6 @@ class Point:
 
         :type other: Point
         :return: self == other
-        :rtype: bool
         """
         return (self.__x == other.__x) and (self.__y == other.__y) and (self.__curve == other.__curve) and \
                (self.__infinite == other.__infinite)
