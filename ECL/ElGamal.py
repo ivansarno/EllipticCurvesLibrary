@@ -1,8 +1,10 @@
-from ECL import Auxfun
-from ECL.Point import Point
+from typing import Callable, Tuple
+from ECL import utility
+from ECL.point import Point
+from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.2'
+__version__ = 'V.4.0'
 __doc__ = """ElGamal's cipher.
 
 fun:
@@ -12,15 +14,13 @@ fun:
 """
 
 
-def keygen(base_point, curve_size, generator=Auxfun.generator):
+def keygen(base_point: PointWOrder, curve_size: int, generator: Callable[[int], int]=utility.generator) \
+        -> Tuple[int, Point]:
     """Cipher's key generator.
 
-    :param base_point: Point used as base, can be used a standard point from StdCurves
-    :param generator: random number generator, return a rondom int of size passed by parameter,
+    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
+    :param generator: random number generator, return a random int of size passed by parameter,
     use the built-in by default
-    :type base_point: PointWOrder
-    :type generator: int -> int
-    :rtype: int * Point
     :return: key composed by a secret number and a point
     """
 
@@ -29,20 +29,16 @@ def keygen(base_point, curve_size, generator=Auxfun.generator):
     return secret, key_point
 
 
-def encrypt(message, pubkey, base_point, generator=Auxfun.generator):
+def encrypt(message: Point, pubkey: Point, base_point: Point, generator: Callable[[int], int]=utility.generator) -> \
+        Tuple[Point, Point]:
     """ElGamal encryption fun.
 
     :param message: Point that expresses the message
     :param pubkey: Point used as public key
-    :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
-    :param generator: random number generator, return a rondom int of size passed by parameter,
+    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
+    :param generator: random number generator, return a random int of size passed by parameter,
     use the built-in by default
-    :type message: Point
-    :type pubkey: Point
-    :type base_point: Point
-    :type generator: int -> int
     :return: encrypted message composed by a couple of point
-    :rtype: Point * Point
     """
 
     fact = generator(64)  # standard 64bit int
@@ -51,14 +47,10 @@ def encrypt(message, pubkey, base_point, generator=Auxfun.generator):
     return cipher_point1, cipher_point2
 
 
-def decrypt(message_point1, message_point2, privkey):
+def decrypt(message_point1: Point, message_point2: Point, privkey: int) -> Point:
     """ElGamal decryption fun
 
-    :type message_point1: Point
-    :type message_point2: Point
-    :type privkey: int
     :return: Point that expresses the message decrypted
-    :rtype: Point
     """
 
     temp = message_point1 * privkey

@@ -4,7 +4,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.beta'
+__version__ = 'V.4.0'
 __doc__ = """Diffie-Hellman's public key system.
 
 class:
@@ -18,13 +18,12 @@ class DiffieHellman:
     method:
     -step1
     -step2
-    -returnkey
     """
 
     def __init__(self, base_point: PointWOrder, curve_size: int, generator: Callable[[int], int]=utility.generator):
         """
-        :param base_point: Point used as base, can be used a standard point from ECL_standardcurves
-        :param curve_size: nember of bit of order of the curve
+        :param base_point: Point used as base, can be used a standard point from ECL.std_curves
+        :param curve_size: number of bit of order of the curve
         :param generator: random number generator, return a random int of size passed by parameter,
         use the built-in by default
         """

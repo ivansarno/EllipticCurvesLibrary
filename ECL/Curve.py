@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.3.2'
+__version__ = 'V.4.0'
 __doc__ = """Implemetation of Prime Elliptic Curves"""
 
 
@@ -7,10 +7,9 @@ class Curve:
     """Prime Elliptic Curve.
 
     member:
-    :type a: int
-    :type b: int
-    prime:  prime number that define the field of the curve
-    :type prime: int
+    -a
+    -b
+    -prime
 
     method:
     - __eq__
@@ -18,17 +17,26 @@ class Curve:
     - __repr__
     - __str__
     """
-    def __init__(self, a_init, b_init, prime_init):
+    def __init__(self, a_init: int, b_init: int, prime_init: int):
         """
 
-        :type a_init: int
-        :type b_init: int
         :param prime_init: prime number
-        :type prime_init: int
         """
-        self.a = a_init
-        self.b = b_init
-        self.prime = prime_init
+        self.__a = a_init
+        self.__b = b_init
+        self.__prime = prime_init
+
+    @property
+    def a(self) -> int:
+        return self.__a
+
+    @property
+    def b(self) -> int:
+        return self.__b
+
+    @property
+    def prime(self) -> int:
+        return self.__prime
 
     def __eq__(self, other):
         """
@@ -37,7 +45,7 @@ class Curve:
         :return: self == other
         :rtype: bool
         """
-        return (self.a == other.a) and (self.b == other.b) and (self.prime == other.prime)
+        return (self.__a == other.__a) and (self.__b == other.__b) and (self.__prime == other.__prime)
 
     def copy(self):
         """Return a copy of self.
@@ -45,11 +53,11 @@ class Curve:
         :return: Curve copy of self
         :rtype: Curve
         """
-        ris = Curve(self.a, self.b, self.prime)
+        ris = Curve(self.__a, self.__b, self.__prime)
         return ris
 
     def __str__(self):
-        return "a: %x\nb: %x\nprime: %x\n" % (self.a, self.b, self.prime)
+        return "a: %x\nb: %x\nprime: %x\n" % (self.__a, self.__b, self.__prime)
 
     def __repr__(self):
-        return "Curve(0x%x, 0x%x, 0x%x)" % (self.a, self.b, self.prime)
+        return "Curve(0x%x, 0x%x, 0x%x)" % (self.__a, self.__b, self.__prime)

@@ -1,8 +1,10 @@
-from ECL.Auxfun import is_square, EclException
-from ECL.Point import Point
+from typing import Tuple
+from ECL.curve import Curve
+from ECL.utility import is_square, EclException
+from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.3.2'
+__version__ = 'V.4.0'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:
@@ -15,33 +17,27 @@ exceptions:
 """
 
 
-def encode(msg, padding, curve):
+def encode(message: int, padding: int, curve: Curve) -> Point:
     """Conversion int to Point using Koblitz algorithm.
 
 AAA this implementation of Kobitz algorithm work only whene prime field of curve = 3 mod 4
-it work whit stdcurves exept P224
+it work whit stdcurves except P224
 raise KoblitzFailError
 
-    :param msg: message
-    :type msg: int
-    :param padding: express the padding and number of maximum attempts
-    :type padding: int
     :param curve: Curve of point returned
-    :type curve: Curve
     :return: Point of curve
-    :rtype: Point
     :raise: KoblitzFailError
     """
     if curve.prime % 4 != 3:
         raise KoblitzFailError("curve.prime % 4 != 3")
-    if msg * (padding + 1) < curve.prime:
-        msg *= padding
+    if message * (padding + 1) < curve.prime:
+        message *= padding
         i = 0
-        x = msg
+        x = message
         y = (x**3 + curve.a * x + curve.b) % curve.prime
         while (not is_square(y, curve.prime)) and i < padding:
             i += 1
-            x = msg + i
+            x = message + i
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
             ex = pow(y, (curve.prime + 1) // 4, curve.prime)
@@ -49,29 +45,22 @@ raise KoblitzFailError
     raise KoblitzFailError("point not found")
 
 
-def decode(point, padding):
+def decode(point: Point, padding: int) -> int:
     """Converts Point to int deleting the padding.
 
     :param point: Point that contain a message
-    :type point: Point
     :param padding: padding used to create the Point
-    :type padding: int
     :return: the message, abscissa of point without the padding
-    :rtype: int
     """
     return point.x // padding
 
 
-def iterative_encode(msg, curve):
-    """ Conversion int to Point by iterating koblitz_encode until find a point.
-    :param msg: message
-    :type msg: int
-    :param curve: Curve of point returned
-    :type curve: Curve
-    :return: (point, padding)
-    :rtype: Point * int
-    """
+def iterative_encode(message: int, curve: Curve) -> Tuple[Point, int]:
+    """ Conversion int to Point by iterating koblitz.encode until find a point.
 
+    :param curve: Curve of point returned
+    :return: (point, padding)
+    """
     if curve.prime % 4 != 3:
         raise KoblitzFailError("curve.prime % 4 != 3")
     not_found = True
@@ -79,7 +68,7 @@ def iterative_encode(msg, curve):
     padding = 1
     while not_found:
         try:
-            point = encode(msg, padding, curve)
+            point = encode(message, padding, curve)
         except KoblitzFailError:
             padding += 1
         else:
