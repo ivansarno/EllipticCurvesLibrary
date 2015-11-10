@@ -1,17 +1,14 @@
+import random
 import ECL
 from ECL import *
 from ECL import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.0'
+__version__ = 'V.4.1'
 __doc__ = """Test for package's feature"""
 
 
-# AAA koblitz algorithm not work wit CurveP224
-
-
 def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, size=192):
-    """AAA koblitz algorithm not work wit CurveP224"""
     try:
         test_arithmetic(curve, point)
         test_diffie_hellman(point, size)
@@ -37,9 +34,8 @@ def test_diffie_hellman(point=ECL.std_curves.PointP192, size=192):
 
 
 def test_el_gamal_koblitz(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, size=192):
-    """AAA koblitz algorithm not work wit CurveP224"""
     key = ECL.elgamal.keygen(point(), size)
-    message = 1234
+    message = random.randint(0, 65535)
     m = ECL.koblitz.iterative_encode(message, curve())
     cipher = ECL.elgamal.encrypt(m[0], key[1], point())
     d = ECL.elgamal.decrypt(cipher[0], cipher[1], key[0])

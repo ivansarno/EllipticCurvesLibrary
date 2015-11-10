@@ -1,5 +1,5 @@
 __author__ = 'ivansarno'
-__version__ = 'V.4.0'
+__version__ = 'V.4.1'
 __doc__ = """Implemetation of Prime Elliptic Curves"""
 
 

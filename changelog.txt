@@ -1,3 +1,6 @@
+Version 4.1:
+1) koblitz’s algorithm now support all prime number
+
 Version 4.0:
 1) hexadecimal encode for std_curves
 2) new test module: automatic test for arithmetic, representation and built-in algorithm

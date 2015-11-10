@@ -1,10 +1,10 @@
 from typing import Tuple
 from ECL.curve import Curve
-from ECL.utility import is_square, EclException
+from ECL.utility import is_square, EclException, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.0'
+__version__ = 'V.4.1'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:
@@ -20,16 +20,12 @@ exceptions:
 def encode(message: int, padding: int, curve: Curve) -> Point:
     """Conversion int to Point using Koblitz algorithm.
 
-AAA this implementation of Kobitz algorithm work only whene prime field of curve = 3 mod 4
-it work whit stdcurves except P224
-raise KoblitzFailError
-
     :param curve: Curve of point returned
     :return: Point of curve
     :raise: KoblitzFailError
+
+    All curves are supported but performances depends from prime number
     """
-    if curve.prime % 4 != 3:
-        raise KoblitzFailError("curve.prime % 4 != 3")
     if message * (padding + 1) < curve.prime:
         message *= padding
         i = 0
@@ -40,7 +36,7 @@ raise KoblitzFailError
             x = message + i
             y = (x**3 + curve.a * x + curve.b) % curve.prime
         if i < padding:
-            ex = pow(y, (curve.prime + 1) // 4, curve.prime)
+            ex = square_root(y, curve.prime)
             return Point(curve, x, ex)
     raise KoblitzFailError("point not found")
 
@@ -61,8 +57,6 @@ def iterative_encode(message: int, curve: Curve) -> Tuple[Point, int]:
     :param curve: Curve of point returned
     :return: (point, padding)
     """
-    if curve.prime % 4 != 3:
-        raise KoblitzFailError("curve.prime % 4 != 3")
     not_found = True
     point = None
     padding = 1

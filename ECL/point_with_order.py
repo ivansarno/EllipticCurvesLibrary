@@ -1,7 +1,7 @@
 from ECL.curve import Curve
 from ECL.point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.4.0'
+__version__ = 'V.4.1'
 __doc__ = """Point with extra member, the order"""
 
 
