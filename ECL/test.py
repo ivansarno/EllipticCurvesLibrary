@@ -4,7 +4,7 @@ from ECL import *
 from ECL import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.1'
+__version__ = 'V.4.2'
 __doc__ = """Test for package's feature"""
 
 

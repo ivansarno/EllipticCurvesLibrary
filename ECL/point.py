@@ -2,7 +2,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.1'
+__version__ = 'V.4.2'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes:
@@ -165,58 +165,36 @@ class Point:
         :returns: p = other * self (if other < 2 return self.copy())
         :rtype: Point
         """
-        if other == 2 and not self.__infinite:
-            ris = self.copy()
-            ris._doubles()
-            return ris
-        elif other > 2 and not self.__infinite:
-            temp = self.copy()
-            pointlist = [self]  # contains temp result for iterative version of _mul
-            i = 1
-            j = 0
-            while i < other:
-                j += 1
-                i *= 2
-                temp._doubles()  # generate intermediates protucts
-                pointlist.append(temp.copy())  # contains log other intermediates result
-            temp.__infinite = True  # is set to _add identity element
-            while other > 0:  # roll back and _add intermediates protucts
-                if other - i >= 0:
-                    temp._add(pointlist[j])
-                    other -= i
-                j -= 1
-                i //= 2
-            return temp
-        else:
+        if self.__infinite:
+            return self.infinitepoint(self.curve)
+        if other == 1:
             return self.copy()
+
+        result = self.infinitepoint(self.curve)
+        temp = self.copy()
+        while other != 0:
+            if other & 1:
+                result._add(temp)
+            temp._doubles()
+            other >>= 1
+        return result
 
     def _mul(self, other: int):
         """Multiplies self without create a new Point.
 
         :param other: number >=2
         """
-        if other == 2 and not self.__infinite:
+        if self.__infinite or other == 1:
+            return
+        temp = self.infinitepoint(self.curve)
+        while other != 0:
+            if other & 1:
+                temp._add(self)
             self._doubles()
-        elif other > 2 and not self.__infinite:
-            temp = self.copy()
-            pointlist = [self]
-            i = 1
-            j = 0
-            while i < other:
-                j += 1
-                i *= 2
-                temp._doubles()
-                pointlist.append(temp.copy())
-            temp.__infinite = True
-            while other > 0:
-                if other - i >= 0:
-                    temp._add(pointlist[j])
-                    other = other - i
-                j -= 1
-                i //= 2
-            self.__x = temp.__x
-            self.__y = temp.__y
-            self.__infinite = temp.__infinite
+            other >>= 1
+        self.__x = temp.__x
+        self.__y = temp.__y
+        self.__infinite = temp.__infinite
 
     def check(self, curve: Curve) -> bool:
         """Check if self is a valid point of __curve.

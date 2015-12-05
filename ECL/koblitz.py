@@ -4,7 +4,7 @@ from ECL.utility import is_square, EclException, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.1'
+__version__ = 'V.4.2'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions:

@@ -6,7 +6,7 @@ from ECL.diffie_hellman import DiffieHellman
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.4.1'
+__version__ = 'V.4.2'
 __all__ = ["Curve", "Point", "PointWOrder", "EclException"]
 __doc__ = """ ECL: library includes basic operation on Elliptic curves and 2 cipher.
 
