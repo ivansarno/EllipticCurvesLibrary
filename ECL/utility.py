@@ -64,7 +64,7 @@ def is_square(num: int, module: int) -> bool:
 
 
 def generator(size: int) -> int:
-        """ return a random number.
+        """ Random Number generator for test, is not safe.
 
     :param size: number of bit of random number
     :return: random int of size bit
