@@ -50,7 +50,7 @@ def sign(message: bytearray, privkey: int, base_point: PointWOrder, generator: C
         raise ECDSAError("bit length of order of base point > 512")
     sha = hashlib.sha512()
     sha.update(message)
-    message_hash = int(sha.digest().hex(), 16)
+    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
     z = message_hash >> (512-base_point.order.bit_length())
     r = 0
     s = 0
@@ -90,7 +90,7 @@ def check(message, r: int, s: int, pubkey: Point, base_point: PointWOrder) -> bo
         raise ECDSAError("bit length of order of base point > 512")
     sha = hashlib.sha512()
     sha.update(message)
-    message_hash = int(sha.digest().hex(), 16)
+    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
     z = message_hash >> (512-base_point.order.bit_length())
     w = inverse(s, base_point.order)
     u1 = (z * w) % base_point.order
