@@ -1,5 +1,5 @@
 # EllipticCurvesLibrary
-Python implementation of Elliptic Curves Criptography
+Python implementation of Elliptic Curves Cryptography
 
 The library includes:
 

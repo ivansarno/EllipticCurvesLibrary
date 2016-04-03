@@ -19,7 +19,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
+__version__ = 'V.5.1'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes:
@@ -153,7 +153,7 @@ class Point:
             return ris
 
     def __sub__(self, other):
-        """Subraction on Elliptic Curves.
+        """Subtraction on Elliptic Curves.
 
         :type other: Point
         :return: self - other
@@ -176,7 +176,7 @@ class Point:
             return ris
 
     def __mul__(self, other: int):
-        """Moltiplication on Elliptic Curve.
+        """Multiplication on Elliptic Curve.
 
         :param other: number >= 2
         :returns: p = other * self (if other < 2 return self.copy())
@@ -243,10 +243,10 @@ class Point:
         return i
 
     def __str__(self):
-        return "x: %x\ny: %x\n" % (self.__x, self.__y) + self.__curve.__str__()
+        return "x: 0x%x\ny: 0x%x\n" % (self.__x, self.__y) + self.__curve.__str__()
 
     def __repr__(self):
-        return "Point(%s, %x, %x)" % (self.__curve.__repr__(), self.__x, self.__y)
+        return "ECL.Point(%s, 0x%x, 0x%x)" % (self.__curve.__repr__(), self.__x, self.__y)
 
 
 def are_opposites(p1: Point, p2: Point) -> bool:

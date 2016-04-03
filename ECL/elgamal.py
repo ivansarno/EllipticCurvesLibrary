@@ -15,68 +15,105 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from typing import Callable, Tuple
+from typing import Callable
 
+from ECL import koblitz
 from ECL.utility import EclException
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
-__doc__ = """ElGamal's cipher.
+__version__ = 'V.5.1'
+__doc__ = """El Gamal's cipher.
 
-fun:
--keygen
--encrypt
--decrypt
+classes:
+-ElGamalMessage
+-PublicKey
+-PrivateKey
 
 exception:
 ElGamalError
 """
 
 
-def keygen(base_point: PointWOrder, generator: Callable[[int], int]) \
-        -> Tuple[int, Point]:
-    """Cipher's key generator.
+class ElGamalMessage:
+    def __init__(self, first: Point, second: Point, padding: int):
+        """This constructor is for internal use, user must resume a message from a representation string"""
+        self.__first = first
+        self.__second = second
+        self.__padding = padding
 
-    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-    :param generator: random number generator, return a random int of size passed by parameter
-    :return: key composed by a secret number and a point
-    """
+    @property
+    def first(self) -> Point:
+        return self.__first
 
-    secret = generator(base_point.order.bit_length()) % base_point.order
-    key_point = base_point * secret
-    return secret, key_point
+    @property
+    def second(self) -> Point:
+        return self.__second
 
+    @property
+    def padding(self) -> int:
+        return self.__padding
 
-def encrypt(message: Point, pubkey: Point, base_point: PointWOrder, generator: Callable[[int], int]) -> \
-        Tuple[Point, Point]:
-    """ElGamal encryption fun.
+    def __str__(self):
+        return "first point:\n%s\nsecond point:\n%s\npadding: 0x%x\n" % (self.__first, self.__second, self.__padding)
 
-    :param message: Point that expresses the message
-    :param pubkey: Point used as public key
-    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-    :param generator: random number generator, return a random int of size passed by parameter
-    :return: encrypted message composed by a couple of point
-    """
-    if not base_point.check(pubkey.curve):
-            raise ElGamalError("the public key and the base point are not on the same curve")
-    fact = generator(base_point.order.bit_length()) % base_point.order
-    while fact == 0:
-        fact = generator(base_point.order.bit_length()) % base_point.order
-    cipher_point1 = base_point * fact
-    cipher_point2 = message + (pubkey * fact)
-    return cipher_point1, cipher_point2
+    def __repr__(self):
+        return "ECL.elgamal.ElGamalMessage(%s, %s, 0x%x)" % (self.__first.__repr__(), self.__second.__repr__(), self.__padding)
 
 
-def decrypt(message_point1: Point, message_point2: Point, privkey: int) -> Point:
-    """ElGamal decryption fun
+class PublicKey:
+    def __init__(self, base_point: PointWOrder, key_point: Point):
+        """This constructor is for internal use, user must generates the public key from a PrivateKey object
+        or resume it from a representation string"""
+        self.__key = key_point
+        self.__base = base_point
 
-    :return: Point that expresses the message decrypted
-    """
+    def encrypt(self, message: int, generator: Callable[[int], int]) -> ElGamalMessage:
+        """
+        :param generator: random number generator, return a positive integer with bit length passed as parameter
+        """
+        if message > self.__base.order:
+            raise ElGamalError("Message too large for this curve")
 
-    temp = message_point1 * privkey
-    return message_point2 - temp
+        message, padding = koblitz.iterative_encode(message, self.__base.curve)
+        fact = generator(self.__base.order.bit_length()) % self.__base.order
+        while fact == 0:
+            fact = generator(self.__base.order.bit_length()) % self.__base.order
+        return ElGamalMessage(self.__base * fact, message + self.__key * fact, padding)
+
+    def __repr__(self):
+        return "ECL.elgamal.PublicKey( %s, %s)" % (self.__base.__repr__(), self.__key.__repr__())
+
+
+class PrivateKey:
+    def __init__(self, base_point: PointWOrder, key: int):
+        """This constructor is for internal use, user must generates the private key with keygen method
+        or resume it from a representation string"""
+        self.__key = key
+        self.__base = base_point
+
+    @staticmethod
+    def keygen(base_point: PointWOrder, generator: Callable[[int], int]):
+        """
+            :param generator: random number generator, return a positive integer with bit length passed as parameter
+        """
+        secret = generator(base_point.order.bit_length()) % base_point.order
+        while secret == 0:
+            secret = generator(base_point.order.bit_length()) % base_point.order
+        return PrivateKey(base_point, secret)
+
+    @property
+    def public_key(self) -> PublicKey:
+        return PublicKey(self.__base, self.__base * self.__key)
+
+    def decrypt(self, message: ElGamalMessage) -> int:
+        temp = message.first * self.__key
+        temp = message.second - temp
+        return koblitz.decode(temp, message.padding)
+
+    def __repr__(self):
+        return "ECL.elgamal.PrivateKey( %s, 0x%x)" % (self.__base.__repr__(), self.__key)
 
 
 class ElGamalError(EclException):

@@ -21,7 +21,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
+__version__ = 'V.5.1'
 __doc__ = """Diffie-Hellman's public key system.
 
 class:
@@ -50,7 +50,7 @@ class DiffieHellman:
         self.__gen = generator
         self.__secret = 0
         self.__key = None
-        self.__synch = False
+        self.__sync = False
 
     def step1(self) -> Point:
         """Start protocol and return a Point to send to partner.
@@ -58,30 +58,27 @@ class DiffieHellman:
         :return: Point to sand to partner
         """
         self.__secret = self.__gen(self.__point.order.bit_length()) % self.__point.order
-        self.__synch = True
+        self.__sync = True
         return self.__point * self.__secret
 
-    def step2(self, partnerpoint: Point) -> Point:
-        """Take result of partener step1 and return the key as Point
+    def step2(self, partner_point: Point) -> Point:
+        """Take result of partner step1 and return the key as Point
 
-        :param partnerpoint: Point received by partner
+        :param partner_point: Point received by partner
         :return: the key
         :raise: DiffieHellmanError
         """
-        if not self.__synch:
+        if not self.__sync:
             raise DiffieHellmanError("called step2 before calling step1")
-        if not partnerpoint.check(self.__point.curve):
+        if not partner_point.check(self.__point.curve):
             raise DiffieHellmanError("point of partner and the base point are not on the same curve")
-        self.__synch = False
-        self.__key = partnerpoint * self.__secret
+        self.__sync = False
+        self.__key = partner_point * self.__secret
         return self.__key
 
     @property
     def key(self) -> Point:
-        """
-        :return: the key or None if step2 has not been executed
-        """
-        if self.__synch or self.__key is None:
+        if self.__sync or self.__key is None:
             raise DiffieHellmanError("key not found, run step2")
         return self.__key
 

@@ -16,100 +16,120 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import hashlib
-from typing import Callable, Tuple
+from typing import Callable
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 from ECL.utility import inverse, EclException
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
-__doc__ = """ECDSA digital signatore algorithm
+__version__ = 'V.5.1'
+__doc__ = """ECDSA digital signature algorithm
 
-fun:
--sign
--check
--keygen
+classes:
+-PrivateKey
+-PublicKey
+-Signature
 
 exception:
 ECDSAError
 """
 
 
-def sign(message: bytearray, privkey: int, base_point: PointWOrder, generator: Callable[[int], int]) ->Tuple[int, int]:
-    """Digital signature algorithm.
+class Signature:
+    def __init__(self, first: int, second: int):
+        """This constructor is for internal use, user must resume a message from a representation string"""
+        self.__first = first
+        self.__second = second
 
-    AAA order of the curve with length > 512 not supported, raise ECDSAError exception.
+    @property
+    def first(self) -> int:
+        return self.__first
 
-    :param message: bytes represented the message
-    :param privkey: user private key
-    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-    :param generator: random number generator, return a random int of size passed by parameter
-    :return: a couple of integer represented the signature
-    """
-    if base_point.order.bit_length() > 512:
-        raise ECDSAError("bit length of order of base point > 512")
-    sha = hashlib.sha512()
-    sha.update(message)
-    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
-    z = message_hash >> (512-base_point.order.bit_length())
-    r = 0
-    s = 0
-    while r == 0 or s == 0:
-        k = generator(base_point.order.bit_length()) % base_point.order
-        while k == 0:
-            k = generator(base_point.order.bit_length()) % base_point.order
-        p = base_point * k
-        r = p.x % base_point.order
-        s = (inverse(k, base_point.order) * (z + (privkey * r))) % base_point.order
-    return r, s
+    @property
+    def second(self) -> int:
+        return self.__second
+
+    def __str__(self):
+        return "( 0x%x, 0x%x)\n" % (self.__first, self.__second)
+
+    def __repr__(self):
+        return "ECL.ecdsa.Signature(0x%x, 0x%x)" % (self.__first, self.__second)
 
 
-def check(message, r: int, s: int, pubkey: Point, base_point: PointWOrder) -> bool:
-    """ Digital signature verification algorithm.
+class PublicKey:
+    def __init__(self, base_point: PointWOrder, key_point: Point):
+        """This constructor is for internal use, user must generates the public key from a PrivateKey object
+        or resume it from a representation string"""
+        self.__key = key_point
+        self.__base = base_point
 
-    AAA order of the curve with length > 512 not supported, raise ECDSAError exception.
+    def __repr__(self):
+        return "ECL.ecdsa.PublicKey( %s, %s)" % (self.__base.__repr__(), self.__key.__repr__())
 
-    :param message: bytes represented the message
-    :param r: first member of the signature
-    :param s: second member of the signature
-    :param pubkey: user public key
-    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-    :return: true is the signaure is verified, else false
-    """
-    if not pubkey:
-        return False
-    if not pubkey.check(base_point.curve):
-        return False
-    if pubkey * base_point.order:
-        return False
-    if r < 1 or r >= base_point.order:
-        return False
-    if s < 1 or s >= base_point.order:
-        return False
-    if base_point.order.bit_length() > 512:
-        raise ECDSAError("bit length of order of base point > 512")
-    sha = hashlib.sha512()
-    sha.update(message)
-    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
-    z = message_hash >> (512-base_point.order.bit_length())
-    w = inverse(s, base_point.order)
-    u1 = (z * w) % base_point.order
-    u2 = (r * w) % base_point.order
-    p = (base_point * u1) + (pubkey * u2)
-    return r == p.x % base_point.order
+    def check(self, message: bytearray, signature: Signature) -> bool:
+        """ Digital signature verification algorithm."""
+
+        if self.__key * self.__base.order:
+            return False
+        if signature.first < 1 or signature.first >= self.__base.order:
+            return False
+        if signature.second < 1 or signature.second >= self.__base.order:
+            return False
+        sha = hashlib.sha512()
+        sha.update(message)
+        message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
+        z = message_hash >> (512 - self.__base.order.bit_length())
+        w = inverse(signature.second, self.__base.order)
+        u1 = (z * w) % self.__base.order
+        u2 = (signature.first * w) % self.__base.order
+        p = (self.__base * u1) + (self.__key * u2)
+        return signature.first == p.x % self.__base.order
 
 
-def keygen(base_point: PointWOrder, generator: Callable[[int], int]) -> Tuple[int, Point]:
-    """
-    :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-    :param generator: random number generator, return a random int of size passed by parameter
-    :return: the couple (private key, public key)
-    """
-    privkey = generator(base_point.order.bit_length()) % base_point.order
-    while privkey == 0:
-        privkey = generator(base_point.order.bit_length()) % base_point.order
-    pubkey = base_point * privkey
-    return privkey, pubkey
+class PrivateKey:
+    def __init__(self, base_point: PointWOrder, key: int):
+        """This constructor is for internal use, user must generates the private key with keygen method
+        or resume it from a representation string"""
+        self.__key = key
+        self.__base = base_point
+
+    @staticmethod
+    def keygen(base_point: PointWOrder, generator: Callable[[int], int]):
+        """
+            :param generator: random number generator, return a positive integer with bit length passed as parameter
+
+            AAA order of the curve with length > 512 not supported, raise ECDSAError exception.
+        """
+        if base_point.order.bit_length() > 512:
+            raise ECDSAError("bit length of order of base point > 512")
+        secret = generator(base_point.order.bit_length()) % base_point.order
+        while secret == 0:
+            secret = generator(base_point.order.bit_length()) % base_point.order
+        return PrivateKey(base_point, secret)
+
+    @property
+    def public_key(self) -> PublicKey:
+        return PublicKey(self.__base, self.__base * self.__key)
+
+    def sign(self, message: bytearray, generator: Callable[[int], int]) -> Signature:
+        """Digital signature algorithm."""
+        sha = hashlib.sha512()
+        sha.update(message)
+        message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
+        z = message_hash >> (512 - self.__base.order.bit_length())
+        r = 0
+        s = 0
+        while r == 0 or s == 0:
+            k = generator(self.__base.order.bit_length()) % self.__base.order
+            while k == 0:
+                k = generator(self.__base.order.bit_length()) % self.__base.order
+            p = self.__base * k
+            r = p.x % self.__base.order
+            s = (inverse(k, self.__base.order) * (z + (self.__key * r))) % self.__base.order
+        return Signature(r, s)
+
+    def __repr__(self):
+        return "ECL.ecdsa.PrivateKey( %s, 0x%x)" % (self.__base.__repr__(), self.__key)
 
 
 class ECDSAError(EclException):

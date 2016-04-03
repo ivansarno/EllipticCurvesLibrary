@@ -18,7 +18,7 @@ limitations under the License.
 from ECL.curve import Curve
 from ECL.point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
+__version__ = 'V.5.1'
 __doc__ = """Point with extra member, the order"""
 
 
@@ -32,7 +32,7 @@ class PointWOrder (Point):
 
         :param curve: Curve of the point
         :param x_init: abscissa
-        :param y_init: ordinata
+        :param y_init: ordinate
         :param order: order of Point
         """
         super().__init__(curve, x_init, y_init)
@@ -83,10 +83,10 @@ class PointWOrder (Point):
         if self.order < 0:
             return super().__str__()
         else:
-            return "x: %x\ny: %x\norder: %x\n" % (self.x, self.y, self.order) + self.curve.__str__()
+            return "x: %x\ny: 0x%x\norder: 0x%x\n" % (self.x, self.y, self.order) + self.curve.__str__()
 
     def __repr__(self):
         if self.order < 0:
             return super().__repr__()
         else:
-            return "PointWOrder(%s, 0x%x, 0x%x, 0x%x)" % (self.curve.__repr__(), self.x, self.y, self.order)
+            return "ECL.PointWOrder(%s, 0x%x, 0x%x, 0x%x)" % (self.curve.__repr__(), self.x, self.y, self.order)

@@ -20,14 +20,13 @@ import os
 from typing import Tuple
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.0'
-__doc__ = """ built-in random number generator, root exception,
-implementation of Extended Euclide algorithm, inverse calculation and modular square root.
-This functions are ued by other modules"""
+__version__ = 'V.5.1'
+__doc__ = """ built-in random number generator, root exception, inverse calculation and modular square root.
+This functions are used by other modules"""
 
 
 def inverse(number: int, modulus: int) -> int:
-    """Inverse operation in modular arihtmetic.
+    """Inverse operation in modular arithmetic.
 
     :return: inverse of number mod module
     """
@@ -85,8 +84,10 @@ class EclException(Exception):
 def square_root(number: int, prime: int) -> int:
     """Return square roots of number mod prime
 
-    the cases in which number == 0 or prime == 2 is not supported because not occurs in this program
+    the cases in which prime == 2 is not supported because not occurs in this program
     """
+    if number == 0:
+        return 0
     if (prime % 4) == 3:
         return pow(number, (prime + 1) // 4, prime)
     if (prime % 8) == 5:
@@ -99,18 +100,15 @@ def square_root(number: int, prime: int) -> int:
     return r[1]
 
 
-def legendre_symbol(nember: int, prime: int) -> int:
-    ls = pow(nember, (prime - 1) // 2, prime)
+def legendre_symbol(number: int, prime: int) -> int:
+    ls = pow(number, (prime - 1) // 2, prime)
     if ls == prime - 1:
         return -1
     return ls
 
 
 def shanks(number: int, prime: int) -> Tuple[int, int]:
-    """Return square roots of number mod prime
-
-    the cases in which number == 0 or prime == 2 is not supported because not occurs in this program
-    """
+    """Return square roots of number mod prime."""
     q = prime - 1
     s = 0
     while q % 2 == 0:
