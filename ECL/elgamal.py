@@ -26,13 +26,9 @@ __author__ = 'ivansarno'
 __version__ = 'V.5.1'
 __doc__ = """El Gamal's cipher.
 
-classes:
--ElGamalMessage
--PublicKey
--PrivateKey
+classes: ElGamalMessage, PublicKey, PrivateKey
 
-exception:
-ElGamalError
+exception: ElGamalError
 """
 
 
@@ -78,7 +74,7 @@ class PublicKey:
 
         message, padding = koblitz.iterative_encode(message, self.__base.curve)
         fact = generator(self.__base.order.bit_length()) % self.__base.order
-        while fact == 0:
+        while fact < 2:
             fact = generator(self.__base.order.bit_length()) % self.__base.order
         return ElGamalMessage(self.__base * fact, message + self.__key * fact, padding)
 
@@ -99,7 +95,7 @@ class PrivateKey:
             :param generator: random number generator, return a positive integer with bit length passed as parameter
         """
         secret = generator(base_point.order.bit_length()) % base_point.order
-        while secret == 0:
+        while secret < 2:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
 

@@ -22,11 +22,9 @@ __author__ = 'ivansarno'
 __version__ = 'V.5.1'
 __doc__ = """Implementation of Point of Elliptic Curve
 
-classes:
--Point
+classes: Point
 
-Functions:
--are_opposites
+Functions: are_opposites
 """
 
 

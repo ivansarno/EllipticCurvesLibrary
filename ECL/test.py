@@ -39,7 +39,7 @@ def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, generat
     return result
 
 
-def test_diffie_hellman(point=ECL.std_curves.PointP192, generator=utility.generator):
+def test_diffie_hellman(point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
     user1 = ECL.DiffieHellman(point(), generator)
     user2 = ECL.DiffieHellman(point(), generator)
     message1 = user1.step1()
@@ -54,7 +54,7 @@ def test_diffie_hellman(point=ECL.std_curves.PointP192, generator=utility.genera
         return False
 
 
-def test_el_gamal_koblitz(point=ECL.std_curves.PointP192, generator=utility.generator):
+def test_el_gamal_koblitz(point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
     private = elgamal.PrivateKey.keygen(point(), generator)
     public = private.public_key
     message = random.randint(1, 2**32)
@@ -68,7 +68,7 @@ def test_el_gamal_koblitz(point=ECL.std_curves.PointP192, generator=utility.gene
         return False
 
 
-def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192):
+def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192) -> bool:
     inf = ECL.point.Point.infinitepoint(curve())
     p = point()
     cond1 = (p * 3) == ((p + p + p + p + p) - (p * 2))
@@ -81,7 +81,7 @@ def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP1
         return False
 
 
-def test_ecdsa(message: bytearray=None, point=ECL.std_curves.PointP192, generator=utility.generator):
+def test_ecdsa(message: bytearray=None, point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
     p = point()
     if message is None:
         message = generator(2000)

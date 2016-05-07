@@ -25,13 +25,9 @@ __author__ = 'ivansarno'
 __version__ = 'V.5.1'
 __doc__ = """ECDSA digital signature algorithm
 
-classes:
--PrivateKey
--PublicKey
--Signature
+classes: PrivateKey, PublicKey, Signature
 
-exception:
-ECDSAError
+exception: ECDSAError
 """
 
 
@@ -103,7 +99,7 @@ class PrivateKey:
         if base_point.order.bit_length() > 512:
             raise ECDSAError("bit length of order of base point > 512")
         secret = generator(base_point.order.bit_length()) % base_point.order
-        while secret == 0:
+        while secret < 2:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
 

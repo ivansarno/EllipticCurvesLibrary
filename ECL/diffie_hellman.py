@@ -24,20 +24,16 @@ __author__ = 'ivansarno'
 __version__ = 'V.5.1'
 __doc__ = """Diffie-Hellman's public key system.
 
-class:
-DiffieHellman
+class: DiffieHellman
 
-exception:
-DiffieHellmanError
+exception: DiffieHellmanError
 """
 
 
 class DiffieHellman:
     """Object that creates and stores a key.
 
-    method:
-    -step1
-    -step2
+    method: step1, step2
     """
 
     def __init__(self, base_point: PointWOrder, generator: Callable[[int], int]):

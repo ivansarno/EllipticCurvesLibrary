@@ -23,16 +23,8 @@ __doc__ = """Implementation of Prime Elliptic Curves"""
 class Curve:
     """Prime Elliptic Curve.
 
-    member:
-    -a
-    -b
-    -prime
-
-    method:
-    - __eq__
-    - copy
-    - __repr__
-    - __str__
+    member: a, b, prime
+    method: __eq__, copy, __repr__, __str__
     """
     def __init__(self, a_init: int, b_init: int, prime_init: int):
         """

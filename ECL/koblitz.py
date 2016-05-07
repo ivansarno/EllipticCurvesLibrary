@@ -24,13 +24,9 @@ __author__ = 'ivansarno'
 __version__ = 'V.5.1'
 __doc__ = """Implementation of Koblitz algorithm.
 
-functions:
--encode
--decode
--iterative_encode
+functions: encode, decode, iterative_encode
 
-exceptions:
--KoblitzFailError
+exceptions: KoblitzFailError
 """
 
 
@@ -41,7 +37,7 @@ def encode(message: int, padding: int, curve: Curve) -> Point:
     :return: Point of curve
     :raise: KoblitzFailError
 
-    All curves are supported but performances depends from prime number
+    All curves are supported but performances depends on prime number
     """
     if message * (padding + 1) < curve.prime:
         message *= padding
