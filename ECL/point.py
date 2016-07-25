@@ -125,6 +125,8 @@ class Point:
         :return: -self
         :rtype: Point
         """
+        if self.__infinite:
+            return self.copy()
         ris = Point(self.__curve, self.__x, -self.__y % self.__curve.prime)
         return ris
 
