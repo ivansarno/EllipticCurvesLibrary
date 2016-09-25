@@ -11,7 +11,7 @@ The library includes:
     -ECDSA signature algorithm
     -NIST standard prime curves
     
-Language Version
+Language Version:  
 The library is written using python 3.5, earlier versions of python 3 may be compatible, but there is no guarantee.
 The library is compatible with PyPy3 2.4
 
