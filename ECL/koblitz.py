@@ -21,7 +21,7 @@ from ECL.utility import is_square, EclException, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions: encode, decode, iterative_encode

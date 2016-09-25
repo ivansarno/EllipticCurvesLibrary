@@ -20,7 +20,7 @@ import ECL
 from ECL import utility, ecdsa, elgamal
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """Test for package's features"""
 
 
@@ -82,7 +82,6 @@ def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP1
 
 
 def test_ecdsa(message: bytearray=None, point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
-    p = point()
     if message is None:
         message = generator(2000)
         message = message.to_bytes(message.bit_length()//8 + 1, 'little')

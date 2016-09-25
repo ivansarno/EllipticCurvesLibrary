@@ -23,7 +23,7 @@ from ECL.diffie_hellman import DiffieHellman
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __all__ = ["Curve", "Point", "PointWOrder", "EclException"]
 __doc__ = """ ECL: library includes basic operations on Elliptic curves, 2 cipher and a digital signature protocol.
 

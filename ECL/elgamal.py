@@ -23,7 +23,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """El Gamal's cipher.
 
 classes: ElGamalMessage, PublicKey, PrivateKey

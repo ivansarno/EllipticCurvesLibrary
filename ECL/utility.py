@@ -20,7 +20,7 @@ import os
 from typing import Tuple
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """ built-in random number generator, root exception, inverse calculation and modular square root.
 This functions are used by other modules"""
 

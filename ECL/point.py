@@ -19,7 +19,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes: Point
@@ -127,8 +127,7 @@ class Point:
         """
         if self.__infinite:
             return self.copy()
-        ris = Point(self.__curve, self.__x, -self.__y % self.__curve.prime)
-        return ris
+        return Point(self.__curve, self.__x, -self.__y % self.__curve.prime)
 
     def __add__(self, other):
         """ Addition on Elliptic Curves.
@@ -149,8 +148,7 @@ class Point:
             lam = ((other.__y - self.__y) * inverse(other.__x - self.__x, self.__curve.prime)) % self.__curve.prime
             newx = ((lam ** 2) - self.__x - other.__x) % self.__curve.prime
             newy = (lam * (self.__x - newx) - self.__y) % self.__curve.prime
-            ris = Point(self.__curve, newx, newy)
-            return ris
+            return Point(self.__curve, newx, newy)
 
     def __sub__(self, other):
         """Subtraction on Elliptic Curves.
@@ -172,8 +170,7 @@ class Point:
                                                                              self.__curve.prime)) % self.__curve.prime
             newx = ((lam ** 2) - self.__x - other.__x) % self.__curve.prime
             newy = (lam * (self.__x - newx) - self.__y) % self.__curve.prime
-            ris = Point(self.__curve, newx, newy)
-            return ris
+            return Point(self.__curve, newx, newy)
 
     def __mul__(self, other: int):
         """Multiplication on Elliptic Curve.

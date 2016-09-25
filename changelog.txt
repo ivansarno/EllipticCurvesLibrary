@@ -1,3 +1,6 @@
+Version 5.2:
+ECDSA parametric hash function
+
 Version 5.1:
 1)ElGamal and ECDSA new OOP design
 2)Various fix

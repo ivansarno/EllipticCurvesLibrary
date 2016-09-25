@@ -16,13 +16,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import hashlib
-from typing import Callable
+from typing import Callable, Tuple
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 from ECL.utility import inverse, EclException
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.1'
+__version__ = 'V.5.2'
 __doc__ = """ECDSA digital signature algorithm
 
 classes: PrivateKey, PublicKey, Signature
@@ -62,8 +62,13 @@ class PublicKey:
     def __repr__(self):
         return "ECL.ecdsa.PublicKey( %s, %s)" % (self.__base.__repr__(), self.__key.__repr__())
 
-    def check(self, message: bytearray, signature: Signature) -> bool:
-        """ Digital signature verification algorithm."""
+    def check(self, message: bytearray, signature: Signature, hash_fun=_standard_hash) -> bool:
+        """ Digital signature verification algorithm.
+
+        :param hash_fun: hash fun, return 2 int, first the hash of the message, second the length of the hash in bits.
+        by default use sha512.
+        :type hash_fun: Callable[[bytearray], Tuple[int, int]]
+        """
 
         if self.__key * self.__base.order:
             return False
@@ -71,10 +76,9 @@ class PublicKey:
             return False
         if signature.second < 1 or signature.second >= self.__base.order:
             return False
-        sha = hashlib.sha512()
-        sha.update(message)
-        message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
-        z = message_hash >> (512 - self.__base.order.bit_length())
+
+        message_hash, hash_length = hash_fun(message)
+        z = message_hash >> (hash_length - self.__base.order.bit_length())
         w = inverse(signature.second, self.__base.order)
         u1 = (z * w) % self.__base.order
         u2 = (signature.first * w) % self.__base.order
@@ -107,12 +111,16 @@ class PrivateKey:
     def public_key(self) -> PublicKey:
         return PublicKey(self.__base, self.__base * self.__key)
 
-    def sign(self, message: bytearray, generator: Callable[[int], int]) -> Signature:
-        """Digital signature algorithm."""
-        sha = hashlib.sha512()
-        sha.update(message)
-        message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
-        z = message_hash >> (512 - self.__base.order.bit_length())
+    def sign(self, message: bytearray, generator: Callable[[int], int], hash_fun=_standard_hash) -> Signature:
+        """Digital signature algorithm.
+
+        :param hash_fun: hash fun, return 2 int, first the hash of the message, second the length of the hash in bits.
+        by default use sha512.
+        :type hash_fun: Callable[[bytearray], Tuple[int, int]]
+        """
+
+        message_hash, hash_length = hash_fun(message)
+        z = message_hash >> (hash_length - self.__base.order.bit_length())
         r = 0
         s = 0
         while r == 0 or s == 0:
@@ -135,3 +143,11 @@ class ECDSAError(EclException):
 
     def __str__(self):
         return self.value.__repr__()
+
+
+def _standard_hash(message: bytearray) -> Tuple[int, int]:
+    """Default hash fun, sha512, little endian, unsigned"""
+    sha = hashlib.sha512()
+    sha.update(message)
+    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
+    return message_hash, 512
