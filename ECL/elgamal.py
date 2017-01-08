@@ -18,12 +18,12 @@ limitations under the License.
 from typing import Callable
 
 from ECL import koblitz
-from ECL.utility import EclException
+from ECL.utility import EclError
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.3'
 __doc__ = """El Gamal's cipher.
 
 classes: ElGamalMessage, PublicKey, PrivateKey
@@ -34,7 +34,7 @@ exception: ElGamalError
 
 class ElGamalMessage:
     def __init__(self, first: Point, second: Point, padding: int):
-        """This constructor is for internal use, user must resume a message from a representation string"""
+        """This constructor is for internal use, user must resume a message from a representation string or use deserialization"""
         self.__first = first
         self.__second = second
         self.__padding = padding
@@ -61,7 +61,7 @@ class ElGamalMessage:
 class PublicKey:
     def __init__(self, base_point: PointWOrder, key_point: Point):
         """This constructor is for internal use, user must generates the public key from a PrivateKey object
-        or resume it from a representation string"""
+        or resume it from a representation string or use deserialization"""
         self.__key = key_point
         self.__base = base_point
 
@@ -85,7 +85,7 @@ class PublicKey:
 class PrivateKey:
     def __init__(self, base_point: PointWOrder, key: int):
         """This constructor is for internal use, user must generates the private key with keygen method
-        or resume it from a representation string"""
+        or resume it from a representation string or use deserialization"""
         self.__key = key
         self.__base = base_point
 
@@ -112,10 +112,6 @@ class PrivateKey:
         return "ECL.elgamal.PrivateKey( %s, 0x%x)" % (self.__base.__repr__(), self.__key)
 
 
-class ElGamalError(EclException):
+class ElGamalError(EclError):
     """ElGamal algorithm fail."""
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return self.value.__repr__()
+    pass

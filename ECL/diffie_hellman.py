@@ -16,12 +16,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from typing import Callable
-from ECL.utility import EclException
+from ECL.utility import EclError
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.3'
 __doc__ = """Diffie-Hellman's public key system.
 
 class: DiffieHellman
@@ -39,7 +39,7 @@ class DiffieHellman:
     def __init__(self, base_point: PointWOrder, generator: Callable[[int], int]):
         """
         :param base_point: Point used as base, can be used a standard point from ECL.std_curves
-        :param generator: random number generator, return a random int of size passed by parameter
+        :param generator: random number generator, return a random int of size in bits passed by parameter
         """
 
         self.__point = base_point
@@ -79,10 +79,6 @@ class DiffieHellman:
         return self.__key
 
 
-class DiffieHellmanError(EclException):
+class DiffieHellmanError(EclError):
     """DiffieHellman algorithm fail."""
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return self.value.__repr__()
+    pass

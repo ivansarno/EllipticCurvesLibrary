@@ -19,7 +19,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.3'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes: Point

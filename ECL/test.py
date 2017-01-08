@@ -20,7 +20,7 @@ import ECL
 from ECL import utility, ecdsa, elgamal
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.3'
 __doc__ = """Test for package's features"""
 
 
@@ -30,7 +30,7 @@ def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, generat
         result &= test_diffie_hellman(point, generator)
         result &= test_el_gamal_koblitz(point, generator)
         result &= test_ecdsa(generator=generator)
-    except ECL.EclException:
+    except ECL.EclError:
         print("test ERROR: EclException Raised")
         return False
     except Exception:

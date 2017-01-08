@@ -18,13 +18,13 @@ limitations under the License.
 from ECL import point, curve, std_curves, point_with_order, koblitz, elgamal, diffie_hellman, ecdsa
 from ECL.curve import Curve
 from ECL.point import Point
-from ECL.utility import EclException
+from ECL.utility import EclError
 from ECL.diffie_hellman import DiffieHellman
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
-__all__ = ["Curve", "Point", "PointWOrder", "EclException"]
+__version__ = 'V.5.3'
+__all__ = ["Curve", "Point", "PointWOrder", "EclError"]
 __doc__ = """ ECL: library includes basic operations on Elliptic curves, 2 cipher and a digital signature protocol.
 
 includes:
