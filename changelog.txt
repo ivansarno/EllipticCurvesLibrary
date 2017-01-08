@@ -1,3 +1,13 @@
+Version 5.4:
+1) better tests
+2) test module moved in different package
+
+Version 5.3:
+1)several optimizations and fixes
+2)rename EclException in EclError
+
+Version 5.3 is not backward compatible
+
 Version 5.2:
 ECDSA parametric hash function
 

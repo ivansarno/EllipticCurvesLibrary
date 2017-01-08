@@ -17,11 +17,11 @@ limitations under the License.
 """
 from typing import Tuple
 from ECL.curve import Curve
-from ECL.utility import is_square, EclException, square_root
+from ECL.utility import is_square, EclError, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.4'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions: encode, decode, iterative_encode
@@ -83,10 +83,6 @@ def iterative_encode(message: int, curve: Curve) -> Tuple[Point, int]:
     return point, padding
 
 
-class KoblitzFailError(EclException):
+class KoblitzFailError(EclError):
     """Koblitz algorithm fail, point not found."""
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return self.value.__repr__()
+    pass

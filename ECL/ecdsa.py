@@ -19,10 +19,10 @@ import hashlib
 from typing import Callable, Tuple
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
-from ECL.utility import inverse, EclException
+from ECL.utility import inverse, EclError
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.4'
 __doc__ = """ECDSA digital signature algorithm
 
 classes: PrivateKey, PublicKey, Signature
@@ -31,9 +31,17 @@ exception: ECDSAError
 """
 
 
+def _standard_hash(message: bytearray) -> Tuple[int, int]:
+    """Default hash fun, sha512, little endian, unsigned"""
+    sha = hashlib.sha512()
+    sha.update(message)
+    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
+    return message_hash, 512
+
+
 class Signature:
     def __init__(self, first: int, second: int):
-        """This constructor is for internal use, user must resume a message from a representation string"""
+        """This constructor is for internal use, user must resume a message from a representation string or use deserialization"""
         self.__first = first
         self.__second = second
 
@@ -55,7 +63,7 @@ class Signature:
 class PublicKey:
     def __init__(self, base_point: PointWOrder, key_point: Point):
         """This constructor is for internal use, user must generates the public key from a PrivateKey object
-        or resume it from a representation string"""
+        or resume it from a representation string or use deserialization"""
         self.__key = key_point
         self.__base = base_point
 
@@ -89,7 +97,7 @@ class PublicKey:
 class PrivateKey:
     def __init__(self, base_point: PointWOrder, key: int):
         """This constructor is for internal use, user must generates the private key with keygen method
-        or resume it from a representation string"""
+        or resume it from a representation string or use deserialization"""
         self.__key = key
         self.__base = base_point
 
@@ -136,18 +144,7 @@ class PrivateKey:
         return "ECL.ecdsa.PrivateKey( %s, 0x%x)" % (self.__base.__repr__(), self.__key)
 
 
-class ECDSAError(EclException):
+class ECDSAError(EclError):
     """ECDSAError algorithm fail."""
-    def __init__(self, value):
-        self.value = value
+    pass
 
-    def __str__(self):
-        return self.value.__repr__()
-
-
-def _standard_hash(message: bytearray) -> Tuple[int, int]:
-    """Default hash fun, sha512, little endian, unsigned"""
-    sha = hashlib.sha512()
-    sha.update(message)
-    message_hash = int.from_bytes(sha.digest(), byteorder='little', signed=False)
-    return message_hash, 512

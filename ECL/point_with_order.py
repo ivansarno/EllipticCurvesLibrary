@@ -18,12 +18,12 @@ limitations under the License.
 from ECL.curve import Curve
 from ECL.point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.5.2'
+__version__ = 'V.5.4'
 __doc__ = """Point with extra member, the order"""
 
 
-class PointWOrder (Point):
-    """EC Point with order parameter.
+class PointWOrder(Point):
+    """EC Point with order member.
 
     order == -1 is garbage value
     """
