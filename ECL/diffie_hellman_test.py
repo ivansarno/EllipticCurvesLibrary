@@ -17,14 +17,17 @@ def test_synch_dh():
     r = False
     try:
         k = dh.key
+        r = False
     except ECL.diffie_hellman.DiffieHellmanError:
         r = True
 
     try:
         dh.step2(ECL.std_curves.PointP192()._doubles())
+        r &= False
 
     except ECL.diffie_hellman.DiffieHellmanError:
         r &= True
+    return r
 
 
 def test_diffie_hellman():

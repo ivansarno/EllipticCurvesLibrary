@@ -34,7 +34,8 @@ exception: ElGamalError
 
 class ElGamalMessage:
     def __init__(self, first: Point, second: Point, padding: int):
-        """This constructor is for internal use, user must resume a message from a representation string or use deserialization"""
+        """This constructor is for internal use, user must resume a message from a
+        representation string or use deserialization"""
         self.__first = first
         self.__second = second
         self.__padding = padding

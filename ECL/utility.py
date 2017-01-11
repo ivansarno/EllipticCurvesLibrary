@@ -67,7 +67,7 @@ def generator(size: int) -> int:
     :param size: number of bit of random number
     :return: random int of size bit
     """
-    temp = os.urandom(size >> 3 + 1)
+    temp = os.urandom(size // 8 + 1)
     return int.from_bytes(temp, 'little')
 
 
@@ -88,7 +88,7 @@ def square_root(number: int, prime: int) -> int:
     if (prime & 7) == 5:
         v = pow(number << 1, (prime-5) >> 3)
         i = ((number * (v ** 2)) << 1) % prime
-        return (number * v * (i -1)) % prime
+        return (number * v * (i - 1)) % prime
     r = shanks(number, prime)
     return r[1]
 
