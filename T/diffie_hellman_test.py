@@ -12,23 +12,21 @@ def test_functionality() -> bool:
     return user1.key == user2.key
 
 
-def test_synch_dh():
+def test_synch_dh() -> bool:
     dh = ECL.DiffieHellman(ECL.std_curves.PointP192(), utility.generator)
     r = False
     try:
         k = dh.key
-        r = False
     except ECL.diffie_hellman.DiffieHellmanError:
         r = True
 
     try:
         dh.step2(ECL.std_curves.PointP192()._doubles())
         r &= False
-
     except ECL.diffie_hellman.DiffieHellmanError:
         r &= True
     return r
 
 
-def test_diffie_hellman():
+def test() -> bool:
     return test_functionality() and test_synch_dh()

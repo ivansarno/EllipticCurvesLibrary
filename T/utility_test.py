@@ -2,14 +2,14 @@ from ECL.utility import *
 import random
 
 
-def test_inverse():
+def test_inverse() -> bool:
     t = 0
     while t == 0:
         t = random.randint(0, 30)
     return (inverse(t, 31) * t) % 31 == 1
 
 
-def test_is_square():
+def test_is_square() -> bool:
     t = 0
     while t == 0:
         t = random.randint(0, 30)
@@ -17,7 +17,7 @@ def test_is_square():
     return is_square(s, 31)
 
 
-def test_square_root():
+def test_square_root() -> bool:
     t = 0
     while t == 0:
         t = random.randint(0, 7)
@@ -41,5 +41,5 @@ def test_square_root():
     return r1 and r2 and r3
 
 
-def test_utility():
+def test_utility() -> bool:
     return test_inverse() and test_is_square() and test_square_root()
