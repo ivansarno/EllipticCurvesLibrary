@@ -1,6 +1,7 @@
 Version 5.4:
 1) better tests
 2) test module moved in different package
+3) old tests refactor as parametric_tests
 
 Version 5.3:
 1)several optimizations and fixes

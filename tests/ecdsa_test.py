@@ -1,19 +1,40 @@
+"""
+    Elliptic Curve Library
+
+    Copyright 2017 Ivan Sarno
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 import random
 
 from ECL import std_curves
 from ECL import utility
 from ECL.ecdsa import *
 
+__author__ = 'ivansarno'
+__version__ = 'V.5.4'
+
+
 def test_functionality() -> bool:
     base = std_curves.PointP192()
     private = PrivateKey.keygen(base, utility.generator)
     public = private.public_key
-    message = message = bytearray(random.randrange(1))
+    message = bytearray(random.randrange(1))
     signature = private.sign(message, utility.generator)
-    #true signature check
+    # true signature check
     if not public.check(message, signature):
         return False
-    #fake signatures check, should not be recognized
+    # fake signatures check, should not be recognized
     fake_signature = Signature(signature.first + 1, signature.second)
     if public.check(message, fake_signature):
         return False
@@ -51,6 +72,3 @@ def test_rapresentation() -> bool:
 
 def test() -> bool:
     return test_functionality() and test_functionality()
-
-
-
