@@ -17,18 +17,20 @@ limitations under the License.
 """
 import random
 import ECL
+from ECL import Point
+from ECL import PointWOrder
 from ECL import utility, ecdsa, elgamal
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 __doc__ = """Test for package's features"""
 
 
-def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
+def test(point: PointWOrder=ECL.std_curves.PointP192(), generator=utility.generator) -> bool:
     try:
-        result = test_arithmetic(curve, point)
-        result &= test_diffie_hellman(point, generator)
-        result &= test_el_gamal_koblitz(point, generator)
+        result = test_arithmetic(point.copy())
+        result &= test_diffie_hellman(point.copy(), generator)
+        result &= test_el_gamal_koblitz(point.copy(), generator)
         result &= test_ecdsa(generator=generator)
     except ECL.EclError:
         print("test ERROR: EclException Raised")
@@ -39,9 +41,9 @@ def test(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192, generat
     return result
 
 
-def test_diffie_hellman(point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
-    user1 = ECL.DiffieHellman(point(), generator)
-    user2 = ECL.DiffieHellman(point(), generator)
+def test_diffie_hellman(point: PointWOrder=ECL.std_curves.PointP192(), generator=utility.generator) -> bool:
+    user1 = ECL.DiffieHellman(point, generator)
+    user2 = ECL.DiffieHellman(point, generator)
     message1 = user1.step1()
     message2 = user2.step1()
     user2.step2(message1)
@@ -54,8 +56,8 @@ def test_diffie_hellman(point=ECL.std_curves.PointP192, generator=utility.genera
         return False
 
 
-def test_el_gamal_koblitz(point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
-    private = elgamal.PrivateKey.keygen(point(), generator)
+def test_el_gamal_koblitz(point: PointWOrder=ECL.std_curves.PointP192(), generator=utility.generator) -> bool:
+    private = elgamal.PrivateKey.keygen(point, generator)
     public = private.public_key
     message = random.randint(1, 2**32)
     cipher = public.encrypt(message, generator)
@@ -68,24 +70,40 @@ def test_el_gamal_koblitz(point=ECL.std_curves.PointP192, generator=utility.gene
         return False
 
 
-def test_arithmetic(curve=ECL.std_curves.CurveP192, point=ECL.std_curves.PointP192) -> bool:
-    inf = ECL.point.Point.infinitepoint(curve())
-    p = point()
-    cond1 = (p * 3) == ((p + p + p + p + p) - (p * 2))
-    cond2 = (-p) == (inf - p)
-    if not inf and cond1 and cond2:
-        print("test arithmetic OK")
-        return True
-    else:
+def test_arithmetic(point: Point) -> bool:
+    inf = point.infinitepoint(point.curve)
+    if point != (point + inf) or point != (point - inf):
         print("test arithmetic ERROR")
         return False
+    p = point.copy()
+    p._doubles()
+    inf2 = inf.copy()
+    inf2._doubles()
+    if point + point != p or inf2 != inf:
+        print("test arithmetic ERROR")
+        return False
+    if -point != inf - point:
+        print("test arithmetic ERROR")
+        return False
+    a = random.randrange(500)
+    b = random.randrange(a // 2)
+    p = inf.copy()
+    for i in range(0, a):
+        p += point
+    if point * a != p:
+        print("test arithmetic ERROR")
+        return False
+    if point * (a - b) != (point * a) - (point * b):
+        return False
+    print("test arithmetic OK")
+    return True
 
 
-def test_ecdsa(message: bytearray=None, point=ECL.std_curves.PointP192, generator=utility.generator) -> bool:
+def test_ecdsa(message: bytearray=None, point: PointWOrder=ECL.std_curves.PointP192(), generator=utility.generator) -> bool:
     if message is None:
         message = generator(2000)
         message = message.to_bytes(message.bit_length()//8 + 1, 'little')
-    priv = ecdsa.PrivateKey.keygen(point(), generator)
+    priv = ecdsa.PrivateKey.keygen(point, generator)
     pub = priv.public_key
     sign = priv.sign(message, generator)
     if not pub.check(message, sign):

@@ -21,7 +21,7 @@ from ECL import elgamal, utility
 from ECL.elgamal import ElGamalError
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 
 
 def test_functionality() -> bool:
@@ -53,5 +53,30 @@ def test_rapresentation() -> bool:
     return vars(private) == vars(rprivate) and vars(message) == vars(rmessage) and vars(public) == vars(rpublic)
 
 
-def test() -> bool:
-    return test_functionality() and test_out_of_range() and test_rapresentation()
+def test_key_creation() -> bool:
+    try:
+        key1 = elgamal.PrivateKey.keycreate(ECL.std_curves.PointP192(), -342)
+        key2 = elgamal.PrivateKey.keycreate(ECL.std_curves.PointP192(), 1)
+        return False
+    except ElGamalError:
+        pass
+    secret = utility.generator(192)
+    private = elgamal.PrivateKey.keycreate(ECL.std_curves.PointP192(), secret)
+    public = private.public_key
+    rprivate = public.try_unlock_key(-3523)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(1)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(secret + 1)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(secret)
+    if rprivate == private:
+        return False
+    return True
+
+
+def test_elgamal() -> bool:
+    return test_functionality() and test_out_of_range() and test_rapresentation() and test_key_creation()

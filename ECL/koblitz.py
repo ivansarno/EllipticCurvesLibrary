@@ -35,7 +35,7 @@ def encode(message: int, padding: int, curve: Curve) -> Point:
 
     :param curve: Curve of point returned
     :return: Point of curve
-    :raise: KoblitzFailError
+    :raise KoblitzFailError:
 
     All curves are supported but performances depends on prime number
     """

@@ -19,7 +19,7 @@ from ECL.utility import *
 import random
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 
 
 def test_inverse() -> bool:

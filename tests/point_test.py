@@ -16,19 +16,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import ECL
-from ECL import elgamal, utility, std_curves
+from ECL import *
 import random
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 
-def point_test():
+
+def test_rapresentation() -> bool:
     point = ECL.std_curves.PointP192()
     dpoint = point._doubles()
     return point == eval(point.__repr__()) and dpoint == eval(dpoint.__repr__())
 
 
-def test():
+def test_arithmetic() -> bool:
+    point = ECL.std_curves.PointP192()
+    inf = point.infinitepoint(point.curve)
+    if point != (point + inf) or point != (point - inf):
+        return False
+    p = point.copy()
+    p._doubles()
+    inf2 = inf.copy()
+    inf2._doubles()
+    if point + point != p or inf2 != inf:
+        return False
+    if -point != inf - point:
+        return False
+    a = random.randrange(500)
+    b = random.randrange(a // 2)
+    p = inf.copy()
+    for i in range(0, a):
+        p += point
+    if point * a != p:
+        return False
+    if point * (a - b) != (point * a) - (point * b):
+        return False
     return True
 
 
+def test_point():
+    return test_rapresentation() and test_arithmetic()

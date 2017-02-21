@@ -41,7 +41,8 @@ def _standard_hash(message: bytearray) -> Tuple[int, int]:
 
 class Signature:
     def __init__(self, first: int, second: int):
-        """This constructor is for internal use, user must resume a message from a representation string or use deserialization"""
+        """This constructor is for internal use, user must resume a message from
+        a representation string or use deserialization"""
         self.__first = first
         self.__second = second
 
@@ -93,6 +94,22 @@ class PublicKey:
         p = (self.__base * u1) + (self.__key * u2)
         return signature.first == p.x % self.__base.order
 
+    def try_unlock_key(self, key: int):
+        """Try to recovers the private key associated to this public key using a possible secret number,
+        return None if fails.
+
+        :return: a PrivateKey or None
+        :param key: a great positive number, it must be the original secret number
+        :rtype: PrivateKey
+        """
+        key %= self.__base.order
+        if key < 2:
+            return None
+        if self.__base * key == self.__key:
+            return PrivateKey(self.__base, key)
+        else:
+            return None
+
 
 class PrivateKey:
     def __init__(self, base_point: PointWOrder, key: int):
@@ -114,6 +131,22 @@ class PrivateKey:
         while secret < 2:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
+
+    @staticmethod
+    def keycreate(base_point: PointWOrder, key: int):
+        """Create a PrivateKey from a secret number.
+
+            :param key: secret number, it must be a great positive number
+            :return: a Private Key
+            :raise ECDSAError: bit length of order of base point > 512, or key too small
+            :rtype: PrivateKey
+        """
+        if base_point.order.bit_length() > 512:
+            raise ECDSAError("bit length of order of base point > 512")
+        key %= base_point.order
+        if key < 2:
+            raise ECDSAError("key, the secret number, not pass the security tests")
+        return PrivateKey(base_point, key)
 
     @property
     def public_key(self) -> PublicKey:

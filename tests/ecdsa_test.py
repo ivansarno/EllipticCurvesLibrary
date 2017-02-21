@@ -17,12 +17,14 @@ limitations under the License.
 """
 import random
 
+import ECL
+from ECL import ecdsa
 from ECL import std_curves
 from ECL import utility
 from ECL.ecdsa import *
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 
 
 def test_functionality() -> bool:
@@ -70,5 +72,30 @@ def test_rapresentation() -> bool:
     return True
 
 
-def test() -> bool:
-    return test_functionality() and test_functionality()
+def test_key_creation() -> bool:
+    try:
+        key1 = ecdsa.PrivateKey.keycreate(ECL.std_curves.PointP192(), -342)
+        key2 = ecdsa.PrivateKey.keycreate(ECL.std_curves.PointP192(), 1)
+        return False
+    except ECDSAError:
+        pass
+    secret = utility.generator(192)
+    private = ecdsa.PrivateKey.keycreate(ECL.std_curves.PointP192(), secret)
+    public = private.public_key
+    rprivate = public.try_unlock_key(-3523)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(1)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(secret + 1)
+    if not rprivate is None:
+        return False
+    rprivate = public.try_unlock_key(secret)
+    if rprivate == private:
+        return False
+    return True
+
+
+def test_ecdsa() -> bool:
+    return test_functionality() and test_functionality() and test_key_creation()

@@ -139,7 +139,7 @@ class Point:
         if self.__infinite:
             return other.copy()
         elif other.__infinite:
-            return self.copy
+            return self.copy()
         elif self == other:
             return self * 2
         elif are_opposites(self, other):
@@ -160,7 +160,7 @@ class Point:
         if self.__infinite:
             return other.__neg__()
         elif other.__infinite:
-            return self.copy
+            return self.copy()
         elif are_opposites(self, other):
             return self * 2
         elif self == other:

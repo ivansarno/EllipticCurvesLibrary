@@ -19,7 +19,7 @@ import ECL
 from ECL import utility
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.1.0'
 
 
 def test_functionality() -> bool:
@@ -48,5 +48,5 @@ def test_synch_dh() -> bool:
     return r
 
 
-def test() -> bool:
+def test_dh() -> bool:
     return test_functionality() and test_synch_dh()

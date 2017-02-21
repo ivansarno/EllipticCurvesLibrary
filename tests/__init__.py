@@ -16,8 +16,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from tests import diffie_hellman_test, ecdsa_test, elgamal_test, koblitz_test, point_test, utility_test
+__author__ = 'ivansarno'
+__version__ = 'V.1.0'
 
 
 def ecl_test():
-    return diffie_hellman_test.test() and ecdsa_test.test() and elgamal_test.test() and koblitz_test.test_koblitz() \
-           and point_test.test() and utility_test.test_utility()
+    return diffie_hellman_test.test_dh() and ecdsa_test.test_ecdsa() and elgamal_test.test_elgamal() and koblitz_test.test_koblitz() \
+           and point_test.test_point() and utility_test.test_utility()
