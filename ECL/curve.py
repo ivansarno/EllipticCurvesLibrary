@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 __author__ = 'ivansarno'
-__version__ = 'V.5.3'
+__version__ = 'V.5.4'
 __doc__ = """Implementation of Prime Elliptic Curves"""
 
 
@@ -62,8 +62,7 @@ class Curve:
         :return: Curve copy of self
         :rtype: Curve
         """
-        ris = Curve(self.__a, self.__b, self.__prime)
-        return ris
+        return Curve(self.__a, self.__b, self.__prime)
 
     def __str__(self):
         return "a: %x\nb: 0x%x\nprime: 0x%x\n" % (self.__a, self.__b, self.__prime)

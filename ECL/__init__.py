@@ -23,7 +23,7 @@ from ECL.diffie_hellman import DiffieHellman
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.3'
+__version__ = 'V.5.4'
 __all__ = ["Curve", "Point", "PointWOrder", "EclError"]
 __doc__ = """ ECL: library includes basic operations on Elliptic curves, 2 cipher and a digital signature protocol.
 
@@ -31,5 +31,5 @@ includes:
 class: Point, PointWOrder, Curve
 algorithm: Diffie-Hellman, ElGamal, Koblitz, ECDSA
 built-in: Nist's standard curves and points
-exception: EclException, DiffieHellmanError, KoblitzFailError, ECDSAError, ElGamalError
+exception: EclError, DiffieHellmanError, KoblitzFailError, ECDSAError, ElGamalError
 """

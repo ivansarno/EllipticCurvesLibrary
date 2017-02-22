@@ -21,7 +21,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.3'
+__version__ = 'V.5.4'
 __doc__ = """Diffie-Hellman's public key system.
 
 class: DiffieHellman

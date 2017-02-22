@@ -1,3 +1,11 @@
+Version 5.4:
+1) better tests
+2) test module moved in different package
+3) old tests refactored as parametric_tests
+4) ElGamal and ECDSA now support private key creation and resume from user's secret number
+5) (Python 3.6+ only) Built-in random number generator use new Python's secrets module, for secure source of randomness
+6) bug fixes
+
 Version 5.3:
 1)several optimizations and fixes
 2)rename EclException in EclError

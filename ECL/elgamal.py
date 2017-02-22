@@ -15,7 +15,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from typing import Callable
+from typing import Callable, Tuple
 
 from ECL import koblitz
 from ECL.utility import EclError
@@ -23,7 +23,7 @@ from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.3'
+__version__ = 'V.5.4'
 __doc__ = """El Gamal's cipher.
 
 classes: ElGamalMessage, PublicKey, PrivateKey
@@ -34,7 +34,8 @@ exception: ElGamalError
 
 class ElGamalMessage:
     def __init__(self, first: Point, second: Point, padding: int):
-        """This constructor is for internal use, user must resume a message from a representation string or use deserialization"""
+        """This constructor is for internal use, user must resume a message from a
+        representation string or use deserialization"""
         self.__first = first
         self.__second = second
         self.__padding = padding
@@ -78,6 +79,22 @@ class PublicKey:
             fact = generator(self.__base.order.bit_length()) % self.__base.order
         return ElGamalMessage(self.__base * fact, message + self.__key * fact, padding)
 
+    def try_unlock_key(self, key: int):
+        """Try to recovers the private key associated to this public key using a possible secret number,
+        return None if fails.
+
+        :return: a PrivateKey or None
+        :param key: a great positive number, it must be the original secret number
+        :rtype: PrivateKey
+        """
+        key %= self.__base.order
+        if key < 2:
+            return None
+        if self.__base * key == self.__key:
+            return PrivateKey(self.__base, key)
+        else:
+            return None
+
     def __repr__(self):
         return "ECL.elgamal.PublicKey( %s, %s)" % (self.__base.__repr__(), self.__key.__repr__())
 
@@ -98,6 +115,22 @@ class PrivateKey:
         while secret < 2:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
+
+    @staticmethod
+    def keycreate(base_point: PointWOrder, key: int):
+        """Create a PrivateKey from a secret number.
+
+            :param key: secret number, it must be a great positive number
+            :return: a Private Key
+            :raise ElGamalError: bit length of order of base point > 512, or key too small
+            :rtype: PrivateKey
+        """
+        key %= base_point.order
+        if key < 2:
+            raise ElGamalError("key, the secret number, not pass the security tests")
+        return PrivateKey(base_point, key)
+
+
 
     @property
     def public_key(self) -> PublicKey:

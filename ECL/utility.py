@@ -19,8 +19,10 @@ limitations under the License.
 import os
 from typing import Tuple
 
+import sys
+
 __author__ = 'ivansarno'
-__version__ = 'V.5.3'
+__version__ = 'V.5.4'
 __doc__ = """ built-in random number generator, root exception, inverse calculation and modular square root.
 This functions are used by other modules"""
 
@@ -60,15 +62,24 @@ def is_square(num: int, module: int) -> bool:
     """
     return pow(num, module >> 1, module) == 1
 
+if sys.version_info.minor < 6:
+    def generator(size: int) -> int:
+        """ Random Number generator for test, is not safe.
 
-def generator(size: int) -> int:
-    """ Random Number generator for test, is not safe.
+        :param size: number of bit of random number
+        :return: random int of size bit
+        """
+        temp = os.urandom(size // 8 + 1)
+        return int.from_bytes(temp, 'little')
+else:
+    def generator(size: int) -> int:
+        """ Random Number generator, use Python's secrets module.
 
-    :param size: number of bit of random number
-    :return: random int of size bit
-    """
-    temp = os.urandom(size >> 3 + 1)
-    return int.from_bytes(temp, 'little')
+        :param size: number of bit of random number
+        :return: random int of size bit
+        """
+        import secrets
+        return abs(secrets.randbits(size))
 
 
 class EclError(Exception):
@@ -88,7 +99,7 @@ def square_root(number: int, prime: int) -> int:
     if (prime & 7) == 5:
         v = pow(number << 1, (prime-5) >> 3)
         i = ((number * (v ** 2)) << 1) % prime
-        return (number * v * (i -1)) % prime
+        return (number * v * (i - 1)) % prime
     r = shanks(number, prime)
     return r[1]
 
