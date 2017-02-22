@@ -34,18 +34,18 @@ def test_functionality() -> bool:
 
 def test_synch_dh() -> bool:
     dh = ECL.DiffieHellman(ECL.std_curves.PointP192(), utility.generator)
-    r = False
     try:
         k = dh.key
+        return False
     except ECL.diffie_hellman.DiffieHellmanError:
-        r = True
+        pass
 
     try:
         dh.step2(ECL.std_curves.PointP192()._doubles())
-        r &= False
+        return False
     except ECL.diffie_hellman.DiffieHellmanError:
-        r &= True
-    return r
+        pass
+    return True
 
 
 def test_dh() -> bool:
