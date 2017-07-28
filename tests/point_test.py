@@ -42,7 +42,7 @@ def test_arithmetic() -> bool:
         return False
     if -point != inf - point:
         return False
-    a = random.randrange(500)
+    a = random.randrange(100)
     b = random.randrange(a // 2)
     p = inf.copy()
     for i in range(0, a):

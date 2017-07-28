@@ -22,7 +22,7 @@ from typing import Tuple
 import sys
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """ built-in random number generator, root exception, inverse calculation and modular square root.
 This functions are used by other modules"""
 
@@ -31,7 +31,7 @@ def inverse(number: int, modulus: int) -> int:
     """Inverse operation in modular arithmetic.
 
     :return: inverse of number mod module
-    use iterative version of extended euclide's algorithm
+    use iterative version of extended Euclide's algorithm
     """
     if modulus == 0:
         return 0
@@ -39,7 +39,7 @@ def inverse(number: int, modulus: int) -> int:
     while buffer[-1] != 0:
         buffer.append(buffer[-2] % buffer[-1])
 
-    buffer.pop() #remove unused temorary value
+    buffer.pop()  # remove unused temporary value
     temp = 0
     intermediate = 1
     result = 1
@@ -90,14 +90,14 @@ class EclError(Exception):
 def square_root(number: int, prime: int) -> int:
     """Return square roots of number mod prime
 
-    the cases in which prime == 2 is not supported because not occurs in this program
+    the cases in which prime == 2 is not supported because not occurs in this library
     """
     if number == 0:
         return 0
     if (prime & 3) == 3:
         return pow(number, (prime + 1) >> 2, prime)
     if (prime & 7) == 5:
-        v = pow(number << 1, (prime-5) >> 3)
+        v = int(pow(number << 1, (prime-5) >> 3))
         i = ((number * (v ** 2)) << 1) % prime
         return (number * v * (i - 1)) % prime
     r = shanks(number, prime)

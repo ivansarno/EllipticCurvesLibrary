@@ -17,12 +17,15 @@ limitations under the License.
 """
 import hashlib
 from typing import Callable, Tuple
+
+import sys
+
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 from ECL.utility import inverse, EclError
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """ECDSA digital signature algorithm
 
 classes: PrivateKey, PublicKey, Signature
@@ -94,28 +97,28 @@ class PublicKey:
         p = (self.__base * u1) + (self.__key * u2)
         return signature.first == p.x % self.__base.order
 
-    def try_unlock_key(self, key: int):
+    def try_unlock_key(self, secret: int):
         """Try to recovers the private key associated to this public key using a possible secret number,
         return None if fails.
 
         :return: a PrivateKey or None
-        :param key: a great positive number, it must be the original secret number
+        :param secret: a great positive number, it must be the original secret number
         :rtype: PrivateKey
         """
-        key %= self.__base.order
-        if key < 2:
+        secret %= self.__base.order
+        if secret < 2:
             return None
-        if self.__base * key == self.__key:
-            return PrivateKey(self.__base, key)
+        if self.__base * secret == self.__key:
+            return PrivateKey(self.__base, secret)
         else:
             return None
 
 
 class PrivateKey:
-    def __init__(self, base_point: PointWOrder, key: int):
+    def __init__(self, base_point: PointWOrder, secret: int):
         """This constructor is for internal use, user must generates the private key with keygen method
         or resume it from a representation string or use deserialization"""
-        self.__key = key
+        self.__key = secret
         self.__base = base_point
 
     @staticmethod
@@ -128,25 +131,25 @@ class PrivateKey:
         if base_point.order.bit_length() > 512:
             raise ECDSAError("bit length of order of base point > 512")
         secret = generator(base_point.order.bit_length()) % base_point.order
-        while secret < 2:
+        while secret < sys.maxsize:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
 
     @staticmethod
-    def keycreate(base_point: PointWOrder, key: int):
+    def keycreate(base_point: PointWOrder, secret: int):
         """Create a PrivateKey from a secret number.
 
-            :param key: secret number, it must be a great positive number
+            :param secret: secret number, it must be a great positive number
             :return: a Private Key
             :raise ECDSAError: bit length of order of base point > 512, or key too small
             :rtype: PrivateKey
         """
         if base_point.order.bit_length() > 512:
             raise ECDSAError("bit length of order of base point > 512")
-        key %= base_point.order
-        if key < 2:
-            raise ECDSAError("key, the secret number, not pass the security tests")
-        return PrivateKey(base_point, key)
+        secret %= base_point.order
+        if secret < sys.maxsize:
+            raise ECDSAError("the secret number not pass the security tests")
+        return PrivateKey(base_point, secret)
 
     @property
     def public_key(self) -> PublicKey:

@@ -19,7 +19,7 @@ from ECL.curve import Curve
 from ECL.utility import inverse
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Implementation of Point of Elliptic Curve
 
 classes: Point
@@ -120,13 +120,13 @@ class Point:
         return ris
 
     def __neg__(self):
-        """Arithmetic _negation of a Point.
+        """Arithmetic negation of a Point.
 
         :return: -self
         :rtype: Point
         """
         if self.__infinite:
-            return self.copy()
+            return self.infinitepoint(self.curve)
         return Point(self.__curve, self.__x, -self.__y % self.__curve.prime)
 
     def __add__(self, other):
@@ -211,7 +211,7 @@ class Point:
         self.__infinite = temp.__infinite
 
     def check(self, curve: Curve) -> bool:
-        """Check if self is a valid point of __curve.
+        """Check if self is a valid point of curve.
 
         :param curve: curve whose membership tested point
         :return: True if self is a valid point of curve

@@ -21,7 +21,7 @@ from ECL.utility import is_square, EclError, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions: encode, decode, iterative_encode
@@ -39,7 +39,7 @@ def encode(message: int, padding: int, curve: Curve) -> Point:
 
     All curves are supported but performances depends on prime number
     """
-    if message * (padding + 1) < curve.prime:
+    if message * (padding + 1) < curve.prime and padding > 0:
         message *= padding
         i = 0
         x = message

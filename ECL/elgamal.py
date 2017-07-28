@@ -17,13 +17,15 @@ limitations under the License.
 """
 from typing import Callable, Tuple
 
+import sys
+
 from ECL import koblitz
 from ECL.utility import EclError
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """El Gamal's cipher.
 
 classes: ElGamalMessage, PublicKey, PrivateKey
@@ -75,23 +77,23 @@ class PublicKey:
 
         message, padding = koblitz.iterative_encode(message, self.__base.curve)
         fact = generator(self.__base.order.bit_length()) % self.__base.order
-        while fact < 2:
+        while fact < sys.maxsize:
             fact = generator(self.__base.order.bit_length()) % self.__base.order
         return ElGamalMessage(self.__base * fact, message + self.__key * fact, padding)
 
-    def try_unlock_key(self, key: int):
+    def try_unlock_key(self, secret: int):
         """Try to recovers the private key associated to this public key using a possible secret number,
         return None if fails.
 
         :return: a PrivateKey or None
-        :param key: a great positive number, it must be the original secret number
+        :param secret: a great positive number, it must be the original secret number
         :rtype: PrivateKey
         """
-        key %= self.__base.order
-        if key < 2:
+        secret %= self.__base.order
+        if secret < sys.maxsize:
             return None
-        if self.__base * key == self.__key:
-            return PrivateKey(self.__base, key)
+        if self.__base * secret == self.__key:
+            return PrivateKey(self.__base, secret)
         else:
             return None
 
@@ -112,7 +114,7 @@ class PrivateKey:
             :param generator: random number generator, return a positive integer with bit length passed as parameter
         """
         secret = generator(base_point.order.bit_length()) % base_point.order
-        while secret < 2:
+        while secret < sys.maxsize:
             secret = generator(base_point.order.bit_length()) % base_point.order
         return PrivateKey(base_point, secret)
 
@@ -126,11 +128,9 @@ class PrivateKey:
             :rtype: PrivateKey
         """
         key %= base_point.order
-        if key < 2:
+        if key < sys.maxsize:
             raise ElGamalError("key, the secret number, not pass the security tests")
         return PrivateKey(base_point, key)
-
-
 
     @property
     def public_key(self) -> PublicKey:

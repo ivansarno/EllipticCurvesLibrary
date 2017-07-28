@@ -19,7 +19,7 @@ from ECL.curve import Curve
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Nist's standard curves and points
 
 (the number in the name is the bit of order)

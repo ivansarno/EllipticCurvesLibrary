@@ -16,16 +16,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from typing import Callable
+
+import sys
+
 from ECL.utility import EclError
 from ECL.point import Point
 from ECL.point_with_order import PointWOrder
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Diffie-Hellman's public key system.
 
 class: DiffieHellman
-
 exception: DiffieHellmanError
 """
 
@@ -54,11 +56,13 @@ class DiffieHellman:
         :return: Point to sand to partner
         """
         self.__secret = self.__gen(self.__point.order.bit_length()) % self.__point.order
+        while self.__secret < sys.maxsize:
+            self.__secret = self.__gen(self.__point.order.bit_length()) % self.__point.order
         self.__sync = True
         return self.__point * self.__secret
 
     def step2(self, partner_point: Point) -> Point:
-        """Take result of partner step1 and return the key as Point
+        """Take result of partner's step1 and return the key as Point
 
         :param partner_point: Point received by partner
         :return: the key
