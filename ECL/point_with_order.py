@@ -18,7 +18,7 @@ limitations under the License.
 from ECL.curve import Curve
 from ECL.point import Point
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Point with extra member, the order"""
 
 

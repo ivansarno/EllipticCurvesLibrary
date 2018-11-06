@@ -27,7 +27,7 @@ __version__ = 'V.1.0'
 def test_functionality() -> bool:
     private = elgamal.PrivateKey.keygen(ECL.std_curves.PointP192(), utility.generator)
     public = private.public_key
-    message = random.randrange(1)
+    message = random.randrange(1, 100000)
     cipher = public.encrypt(message, utility.generator)
     cipher = private.decrypt(cipher)
     return cipher == message
@@ -46,7 +46,7 @@ def test_out_of_range() -> bool:
 def test_rapresentation() -> bool:
     private = elgamal.PrivateKey.keygen(ECL.std_curves.PointP192(), utility.generator)
     public = private.public_key
-    message = public.encrypt(random.randrange(1), utility.generator)
+    message = public.encrypt(random.randrange(1, 1000000), utility.generator)
     rmessage = eval(message.__repr__())
     rpublic = eval(public.__repr__())
     rprivate = eval(private.__repr__())

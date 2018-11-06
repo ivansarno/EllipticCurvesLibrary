@@ -22,7 +22,7 @@ from typing import Tuple
 import sys
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """ built-in random number generator, root exception, inverse calculation and modular square root.
 This functions are used by other modules"""
 
@@ -61,6 +61,7 @@ def is_square(num: int, module: int) -> bool:
     :return: exist y ** 2 mod module == num
     """
     return pow(num, module >> 1, module) == 1
+
 
 if sys.version_info.minor < 6:
     def generator(size: int) -> int:

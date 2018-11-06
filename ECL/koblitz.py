@@ -21,7 +21,7 @@ from ECL.utility import is_square, EclError, square_root
 from ECL.point import Point
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """Implementation of Koblitz algorithm.
 
 functions: encode, decode, iterative_encode
@@ -70,17 +70,23 @@ def iterative_encode(message: int, curve: Curve) -> Tuple[Point, int]:
     :param curve: Curve of point returned
     :return: (point, padding)
     """
-    not_found = True
-    point = None
     padding = 1
-    while not_found:
-        try:
-            point = encode(message, padding, curve)
-        except KoblitzFailError:
-            padding += 1
-        else:
-            not_found = False
-    return point, padding
+    while message * (padding + 1) < curve.prime:
+        message *= padding
+        i = 0
+        x = message
+        y = (x**3 + curve.a * x + curve.b) % curve.prime
+        while (not is_square(y, curve.prime)) and i < padding:
+            i += 1
+            x = message + i
+            y = (x**3 + curve.a * x + curve.b) % curve.prime
+        if i < padding:
+            ex = square_root(y, curve.prime)
+            point = Point(curve, x, ex)
+            return point, padding
+        padding += 1
+    raise KoblitzFailError("point not found")
+
 
 
 class KoblitzFailError(EclError):

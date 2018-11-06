@@ -22,7 +22,7 @@ from ECL.point_with_order import PointWOrder
 from ECL.utility import inverse, EclError
 
 __author__ = 'ivansarno'
-__version__ = 'V.5.4'
+__version__ = 'V.5.5'
 __doc__ = """ECDSA digital signature algorithm
 
 classes: PrivateKey, PublicKey, Signature

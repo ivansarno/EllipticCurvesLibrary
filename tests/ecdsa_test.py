@@ -31,7 +31,7 @@ def test_functionality() -> bool:
     base = std_curves.PointP192()
     private = PrivateKey.keygen(base, utility.generator)
     public = private.public_key
-    message = bytearray(random.randrange(1))
+    message = bytearray(random.randrange(1, 1000000))
     signature = private.sign(message, utility.generator)
     # true signature check
     if not public.check(message, signature):
@@ -61,7 +61,7 @@ def test_functionality() -> bool:
 def test_rapresentation() -> bool:
     private = PrivateKey.keygen(std_curves.PointP192(), utility.generator)
     public = private.public_key
-    message = bytearray(random.randrange(1))
+    message = bytearray(random.randrange(1, 10000000))
     signature = private.sign(message, utility.generator)
     if not vars(signature) == vars(eval(signature.__repr__())):
         return False

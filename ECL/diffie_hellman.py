@@ -54,6 +54,8 @@ class DiffieHellman:
         :return: Point to sand to partner
         """
         self.__secret = self.__gen(self.__point.order.bit_length()) % self.__point.order
+        while self.__secret.bit_length() < 64:
+            self.__secret = self.__gen(self.__point.order.bit_length()) % self.__point.order
         self.__sync = True
         return self.__point * self.__secret
 
@@ -68,6 +70,8 @@ class DiffieHellman:
             raise DiffieHellmanError("called step2 before calling step1")
         if not partner_point.check(self.__point.curve):
             raise DiffieHellmanError("point of partner and the base point are not on the same curve")
+        if partner_point == self.__point or not partner_point:
+            raise DiffieHellmanError("point of partner is a forbidden point")
         self.__sync = False
         self.__key = partner_point * self.__secret
         return self.__key
@@ -77,6 +81,12 @@ class DiffieHellman:
         if self.__sync or self.__key is None:
             raise DiffieHellmanError("key not found, run step2")
         return self.__key
+
+    @property
+    def key_int(self) -> int:
+        if self.__sync or self.__key is None:
+            raise DiffieHellmanError("key not found, run step2")
+        return self.__key.x
 
 
 class DiffieHellmanError(EclError):
