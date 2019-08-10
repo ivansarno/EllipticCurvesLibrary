@@ -1,6 +1,8 @@
 # EllipticCurvesLibrary
 Python implementation of Elliptic Curves Cryptography
 
+**This project has been realized only for didactic purposes, its use in real systems is not recommended. This project will no longer be updated**
+
 The library includes:
 
     -the classes Curve, Point and Point with order
